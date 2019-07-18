@@ -4,11 +4,10 @@
   "description": "backend for barbot",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "concurrently": "^4.1.1",
     "cors": "^2.8.5",
     "express": "^4.17.1"
   },
@@ -16,5 +15,8 @@
   "authors": [
     "Jay Querie <jay@querie.cc>",
     "Tyler Maran <tyler.maran@gmail.com>"
-  ]
+  ],
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
 }

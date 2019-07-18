@@ -4,9 +4,7 @@
   "description": "world's best bartending robot",
   "private": true,
   "scripts": {
-    "client": "cd client && yarn start",
-    "server": "nodemon server.js",
-    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+    "start": "lerna run --parallel start"
   },
   "repository": {
     "type": "git",
