@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
+const handlers = require('./handlers');
 
 module.exports = class Server {
   constructor(options) {
@@ -26,24 +27,13 @@ module.exports = class Server {
   }
 }
 
-function configureRoutes(app, clientBaseDir) {
-  app.post('/order/:drink?', (req, res) => {
-    let drink = req.params.drink;
-
-    console.log('You got it!');
-    res.status(200).json({
-      message: 'You got it!',
-      drink: drink
-    });
-  });
+function configureRoutes(app, clientDir) {
+  app.post('/order/:drink?', handlers.order.drink);
 
   if (process.env.NODE_ENV === 'production') {
     // Serve any static files
-    app.use(express.static(clientBaseDir));
-
+    app.use(express.static(clientDir));
     // Handle React routing, return all requests to React app
-    app.get('*', function(req, res) {
-      res.sendFile(path.join(clientBaseDir, 'index.html'));
-    });
+    app.get('*', (_, res) => res.sendFile(path.join(clientDir, 'index.html')));
   }
 }
