@@ -1,10 +1,9 @@
 {
   "name": "izac",
   "version": "1.0.0",
-  "description": "world's best bartending robor",
-  "main": "index.js",
+  "description": "world's best bartending robot",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && yarn start",
     "server": "nodemon server.js",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
@@ -18,18 +17,14 @@
     "izac",
     "futurama"
   ],
-  "author": "Tyler/Jay",
-  "license": "ISC",
+  "authors": [
+    "Jay Querie <jay@querie.cc>",
+    "Tyler Maran <tyler.maran@gmail.com"
+  ],
   "bugs": {
     "url": "https://github.com/tylermaran/izac/issues"
   },
   "homepage": "https://github.com/tylermaran/izac#readme",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "concurrently": "^4.1.1",
-    "cors": "^2.8.5",
-    "express": "^4.17.1"
-  },
   "devDependencies": {
     "lerna": "^3.15.0"
   }
