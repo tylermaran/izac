@@ -1,0 +1,17 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "backend for barbot",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "concurrently": "^4.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  },
+  "keywords": [],
+  "authors": [ "Jay Querie <jay@querie.cc>", "Tyler Maran <tyler.maran@gmail.com" ]
+}
