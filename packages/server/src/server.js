@@ -28,8 +28,19 @@ module.exports = class Server {
 }
 
 function configureRoutes(app, clientDir) {
+  // Server routes (take priority over client routing).
   app.post('/order/:drink?', handlers.order.drink);
+  app.post('/led/blink-once', handlers.led.blinkOnce);
 
+  // We only concern ourselves with client routes when we're
+  // serving up a generated bundle in production.
+  //
+  // @TODO to avoid overlap between server and client routes, we
+  //       can serve our backend API routes under a unique top-level
+  //       route, or add some fancy middleware. Be aware: if something
+  //       works in development and not in production --- check your
+  //       client routes for any overlap with the server routes above.
+  //
   if (process.env.NODE_ENV === 'production') {
     // Serve any static files
     app.use(express.static(clientDir));
