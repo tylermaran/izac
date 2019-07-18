@@ -4,15 +4,9 @@ const path = require('path');
 const cors = require('cors');
 
 module.exports = class Server {
-  constructor(port, options = {
-    cors: {
-      origin: true,
-      credentials: true,
-      allowedHeaders: ['Content-Type']
-    }
-  }) {
+  constructor(options) {
     this.server;
-    this.port = port;
+    this.port = options.port;
 
     this.app = express();
 
@@ -20,16 +14,7 @@ module.exports = class Server {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
 
-    configureRoutes(this.app);
-
-    if (process.env.NODE_ENV === 'production') {
-      // Serve any static files
-      this.app.use(express.static(path.join(__dirname, '..', 'client/build')));
-      // Handle React routing, return all requests to React app
-      this.app.get('*', function(req, res) {
-        res.sendFile(path.join(__dirname, '..', 'client/build', 'index.html'));
-      });
-    }
+    configureRoutes(this.app, options.client.baseDir);
   }
 
   async start() {
@@ -41,15 +26,7 @@ module.exports = class Server {
   }
 }
 
-function configureRoutes(app) {
-
-  app.get('/', (req, res) => {
-    console.log('What can I get ya?');
-    res.status(200).json({
-      message: 'What can I get ya?'
-    });
-  });
-
+function configureRoutes(app, clientBaseDir) {
   app.post('/order/:drink?', (req, res) => {
     let drink = req.params.drink;
 
@@ -60,4 +37,13 @@ function configureRoutes(app) {
     });
   });
 
+  if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static(clientBaseDir));
+
+    // Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+      res.sendFile(path.join(clientBaseDir, 'index.html'));
+    });
+  }
 }
