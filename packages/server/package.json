@@ -13,5 +13,8 @@
     "express": "^4.17.1"
   },
   "keywords": [],
-  "authors": [ "Jay Querie <jay@querie.cc>", "Tyler Maran <tyler.maran@gmail.com" ]
+  "authors": [
+    "Jay Querie <jay@querie.cc>",
+    "Tyler Maran <tyler.maran@gmail.com>"
+  ]
 }
