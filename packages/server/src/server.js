@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
+const handlers = require('./handlers');
 
 module.exports = class Server {
   constructor(options) {
@@ -26,24 +27,24 @@ module.exports = class Server {
   }
 }
 
-function configureRoutes(app, clientBaseDir) {
-  app.post('/order/:drink?', (req, res) => {
-    let drink = req.params.drink;
+function configureRoutes(app, clientDir) {
+  // Server routes (take priority over client routing).
+  app.post('/order/:drink?', handlers.order.drink);
+  app.post('/led/blink-once', handlers.led.blinkOnce);
 
-    console.log('You got it!');
-    res.status(200).json({
-      message: 'You got it!',
-      drink: drink
-    });
-  });
-
+  // We only concern ourselves with client routes when we're
+  // serving up a generated bundle in production.
+  //
+  // @TODO to avoid overlap between server and client routes, we
+  //       can serve our backend API routes under a unique top-level
+  //       route, or add some fancy middleware. Be aware: if something
+  //       works in development and not in production --- check your
+  //       client routes for any overlap with the server routes above.
+  //
   if (process.env.NODE_ENV === 'production') {
     // Serve any static files
-    app.use(express.static(clientBaseDir));
-
+    app.use(express.static(clientDir));
     // Handle React routing, return all requests to React app
-    app.get('*', function(req, res) {
-      res.sendFile(path.join(clientBaseDir, 'index.html'));
-    });
+    app.get('*', (_, res) => res.sendFile(path.join(clientDir, 'index.html')));
   }
 }
