@@ -3,22 +3,24 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const handlers = require('./handlers');
+const sqlite3 = require('sqlite3')
 
 module.exports = class Server {
   constructor(options) {
     this.server;
     this.port = options.port;
-
+    this.sqlite3_db = new sqlite3.Database(options.sqlite3.filename);
     this.app = express();
 
     this.app.use(cors(options.cors));
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
 
-    configureRoutes(this.app, options.client.baseDir);
+    configureRoutes(this.app, options.client.baseDir, this.sqlite3_db);
   }
 
   async start() {
+    await initDatabase(this.sqlite3_db);
     return new Promise(r => this.server = this.app.listen(this.port, r));
   }
 
@@ -27,13 +29,18 @@ module.exports = class Server {
   }
 }
 
-function configureRoutes(app, clientDir) {
+async function initDatabase(sqlite3_db) {
+  await handlers.bottles.initDatabase(sqlite3_db);
+}
+
+function configureRoutes(app, clientDir, sqlite3_db) {
   // Server routes (take priority over client routing).
   app.post('/order/:drink?', handlers.order.drink);
   app.post('/led/blink-once', handlers.led.blinkOnce);
 
-  app.get('/bottles', handlers.bottles.get);
-  app.post('/bottles', handlers.bottles.create);
+  app.get('/bottles', handlers.bottles.getAll(sqlite3_db));
+  app.post('/bottles', handlers.bottles.add(sqlite3_db));
+  app.get('/bottles/:id', handlers.bottles.get(sqlite3_db));
   app.post('/bottles/:id/refill', handlers.bottles.refill);
 
   app.get('/drinks', handlers.drinks.get);
