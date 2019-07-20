@@ -10,6 +10,7 @@ High-Level Routes
 
 * [GET /bottles](#get-bottles): list of bottles
 * [POST /bottles](#post-bottles): add a new bottle to the system
+* [GET /bottles/:id](#get-bottle): get a bottle info
 * [POST /bottles/:id/refill](#post-refill): refill a bottle
 
 * [GET /drinks](#get-drinks): drink names, id, misc. listing info.
@@ -56,6 +57,17 @@ POST /bottles
     "name": "Gin",
     "max_liters": 1.5
   }
+  200 => {
+    "id": 2,
+    "name": "Gin",
+    "max_liters": 1.5,
+    "current_liters": 1.5
+  }
+```
+
+<a name="get-bottle"></a>
+```json
+POST /bottles/:id
   200 => {
     "id": 2,
     "name": "Gin",
@@ -120,7 +132,7 @@ POST /drinks
     "id": 2,
     "name": "Gin & Lemon-Lime",
     "pours": [
-      { "bottle_id": , "liters": 0.035 },
+      { "bottle_id": 0, "liters": 0.035 },
       { "bottle_id": 1, "liters": 0.200 }
     ]
   }
