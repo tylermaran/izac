@@ -59,7 +59,8 @@ POST /bottles
   200 => {
     "id": 2,
     "name": "Gin",
-    "max_liters": 1.5
+    "max_liters": 1.5,
+    "current_liters": 1.5
   }
 ```
 
