@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# our database stuff --- need to keep this out of the source :)
+db.sqlite3
