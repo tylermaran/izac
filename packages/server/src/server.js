@@ -32,6 +32,15 @@ function configureRoutes(app, clientDir) {
   app.post('/order/:drink?', handlers.order.drink);
   app.post('/led/blink-once', handlers.led.blinkOnce);
 
+  app.get('/bottles', handlers.bottles.get);
+  app.post('/bottles', handlers.bottles.create);
+  app.post('/bottles/:id/refill', handlers.bottles.refill);
+
+  app.get('/drinks', handlers.drinks.get);
+  app.get('/drinks/:id', handlers.drinks.getOne);
+  app.post('/drinks/:id/pour', handlers.drinks.pour);
+  app.post('/drinks', handlers.drinks.add);
+
   // We only concern ourselves with client routes when we're
   // serving up a generated bundle in production.
   //
