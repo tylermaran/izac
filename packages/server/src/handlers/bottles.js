@@ -26,6 +26,8 @@ const getById = (sqlite3_db, id) => new Promise((resolve, reject) =>
     return error ? reject(error) : resolve(result);
   }));
 
+exports.db.getById = getById;
+
 const setBottleLevel = (sqlite3_db, bottle_id, new_liters) => new Promise((resolve, reject) =>
   sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [
     new_liters,

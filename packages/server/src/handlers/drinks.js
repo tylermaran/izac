@@ -85,22 +85,6 @@ const add = async (sqlite3_db, name, pours) => {
   return { drink_statement, pour_statements };
 }
 
-const pour = async (sqlite3_db, drink_id) => {
-  const pours = await getPoursForDrink(sqlite3_db, drink_id);
-
-  for (let i = 0; i < pours.length; i++) {
-    const pour = pours[i];
-    const bottle = await bottles.db.getById(pour.bottle_id);
-    const new_bottle_liters = bottle.current_liters - pour.liters;
-
-    await bottles.db.setBottleLevel(sqlite3_db,
-                                    pour.bottle_id,
-                                    new_bottle_liters);
-  }
-
-  return { drink, pours };
-}
-
 exports.initDatabase = create;
 
 /**
@@ -239,6 +223,57 @@ exports.add = (sqlite3_db) => async (req, res) => {
 };
 
 exports.pour = (sqlite3_db) => async (req, res) => {
-  res.status(204);
-  res.end();
+
+  const invalidations = [];
+  const { id } = req.params;
+
+  if (typeof id !== 'string') {
+    invalidations.push('missing required parameter id');
+  }
+
+  if (invalidations.length > 0) {
+    res.status(400).json({ errors: invalidations });
+    return;
+  }
+
+  try {
+    const drink = await getById(sqlite3_db, id);
+    if (!drink) {
+      res.status(404).json({ error: 'drink not found' });
+      return;
+    }
+
+    const pours = await getPoursForDrink(sqlite3_db, id);
+    if (pours.length <= 0) {
+      res.status(404).json({
+        error: 'pours for drink (id=${drink.id}) not found'
+      });
+      return;
+    }
+
+    for (let i = 0; i < pours.length; i++) {
+      const pour = pours[i];
+
+      const bottle = await bottles.db.getById(sqlite3_db,
+                                              pour.bottle_id);
+
+      const new_bottle_liters = bottle.current_liters - pour.liters;
+
+      await bottles.db.setBottleLevel(sqlite3_db,
+                                      pour.bottle_id,
+                                      new_bottle_liters);
+    }
+
+    res.status(200).json(Object.assign({}, drink, {
+      pours: pours.map(pour => ({
+        bottle_id: pour.bottle_id,
+        liters: pour.liters
+      }))
+    }));
+
+  } catch (error) {
+    const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
+    res.status(500).json({ id, error: "internal server error" });
+    console.error(id, error);
+  }
 };
