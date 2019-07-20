@@ -3,29 +3,34 @@
 const path = require('path');
 const Server = require('../src/server');
 
+const cwd = process.cwd(); // store all files we create in the cwd.
+
 const config = {
-  server: {
-    port: process.env.PORT || 5000,
-    cors: {
-      origin: true,
-      credentials: true,
-      allowedHeaders: ['Content-Type']
-    },
-    client: {
-      // @TODO: sort-of hard coded at the moment and relies on the
-      //        structure of the build directory. would be better to
-      //        pass this in as an environment variable.
-      //
-      //        Keeping it as-is because it's gettin' late, but also
-      //        this code is only used in production builds and not
-      //        during the server development. but it's ugly af.
-      baseDir: path.join(__dirname, '..', '..', 'client')
-    }
+  port: process.env.PORT || 5000,
+  cors: {
+    origin: true,
+    credentials: true,
+    allowedHeaders: ['Content-Type']
+  },
+  client: {
+    // @TODO: sort-of hard coded at the moment and relies on the
+    //        structure of the build directory. would be better to
+    //        pass this in as an environment variable.
+    //
+    //        Keeping it as-is because it's gettin' late, but also
+    //        this code is only used in production builds and not
+    //        during the server development. but it's ugly af.
+    baseDir: path.join(__dirname, '..', '..', 'client')
+  },
+  sqlite3: {
+    filename: path.join(cwd, 'db.sqlite3')
   }
 };
 
 (async function() {
-  const server = new Server(config.server)
+  const server = new Server(config)
   await server.start();
-  console.log(`listening on port ${config.server.port}`);
-})();
+  console.log(`listening on port ${config.port}`);
+})().catch(fatal_error => {
+  console.error(fatal_error)
+}) ;
