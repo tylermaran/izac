@@ -2,6 +2,8 @@
    Database handlers @todo: move to new file once stable
 */
 
+exports.db = {}
+
 const create = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.run(`CREATE TABLE IF NOT EXISTS bottle (
      id INTEGER PRIMARY KEY,
@@ -24,6 +26,16 @@ const getById = (sqlite3_db, id) => new Promise((resolve, reject) =>
     return error ? reject(error) : resolve(result);
   }));
 
+const setBottleLevel = (sqlite3_db, bottle_id, new_liters) => new Promise((resolve, reject) =>
+  sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [
+    new_liters,
+    bottle_id
+  ], function(error) {
+    return error ? reject(error) : resolve(this);
+  }));
+
+exports.db.setBottleLevel = setBottleLevel;
+
 const add = (sqlite3_db, name, max_liters) => new Promise((resolve, reject) =>
   sqlite3_db.run(`INSERT INTO bottle (
     name, max_liters, current_liters
@@ -37,7 +49,7 @@ const refill = async (sqlite3_db, id) => {
   const bottle = await getById(sqlite3_db, id);
 
   return new Promise((resolve, reject) =>
-    sqlite3_db.run(`UPDATE bottle SET current_liters=? new_value_1 WHERE id=?`, [
+    sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [
       bottle.max_liters, id
     ], function(error) {
       return error ? reject(error) : resolve(this);
