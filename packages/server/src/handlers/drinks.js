@@ -148,7 +148,7 @@ exports.getAll = (sqlite3_db) => async (req, res) => {
     }
 
     for (let i = 0; i < drinks.length; i++) {
-      const drink = drinks[0];
+      const drink = drinks[i];
 
       const pours = await getPoursForDrink(sqlite3_db, drink.id);
       if (!pours) {
