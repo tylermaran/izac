@@ -17,21 +17,18 @@ pins = {
   bottle_code_reverse: 21, // peristaltic pump (in reverse)
 
   bottle_ginger_ale: 22, // peristaltic pump
-  bottle_gineger_ale_reverse: 23, // peristaltic pump (in reverse)
+  bottle_ginger_ale_reverse: 23, // peristaltic pump (in reverse)
 
   bottle_tonic: 24, // peristaltic pump
   bottle_tonic_reverse: 26,  // peristaltic pump (in reverse)
 
   bottle_lemon_lime: 29, // peristaltic pump
-  bottle_lemon_lime_reverse: 31, // peristaltic pump (in reverse)
 
-  bottle_cranberry: 32, // air pump
+  bottle_cranberry: 31, // air pump
 
-  straw_dispenser: 33,  // relay to a motor
+  straw_dispenser: 32,  // relay to a motor
 
-  mouth_flashing: 35, // LED's "on and off"
-
-  water_clean_loop: 36 // air pump
+  mouth_flashing: 33, // LED's "on and off"
 };
 
 // enforces that this object has been set up correctly
