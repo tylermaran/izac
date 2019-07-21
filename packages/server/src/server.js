@@ -3,12 +3,22 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const handlers = require('./handlers');
-const sqlite3 = require('sqlite3')
+const sqlite3 = require('sqlite3');
+const fs = require('fs');
 
 module.exports = class Server {
   constructor(options) {
     this.server;
     this.port = options.port;
+
+    console.log('options.sqlite3.filename', options.sqlite3.filename);
+
+    // TOOD: hack for bar competition. don't do this.
+    if (fs.existsSync(options.sqlite3.filename)) {
+      console.log('deleting old database');
+      fs.unlinkSync(options.sqlite3.filename);
+    }
+
     this.sqlite3_db = new sqlite3.Database(options.sqlite3.filename);
     this.app = express();
 
@@ -32,6 +42,93 @@ module.exports = class Server {
 async function initDatabase(sqlite3_db) {
   await handlers.bottles.initDatabase(sqlite3_db);
   await handlers.drinks.initDatabase(sqlite3_db);
+
+  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
+  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
+  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
+  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
+  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv !!!
+
+  // >>>> bottles (liquor)
+  await handlers.bottles.db.add(sqlite3_db, "rum", 1.75); // id=1
+  await handlers.bottles.db.add(sqlite3_db, "gin", 1.75); // id=2
+  await handlers.bottles.db.add(sqlite3_db, "vodka", 1.75); // id=3
+  await handlers.bottles.db.add(sqlite3_db, "scotch", 1.75); // id=4
+  await handlers.bottles.db.add(sqlite3_db, "irish whisky", 1.75); // id=5
+  await handlers.bottles.db.add(sqlite3_db, "tequila", 1.75); // id=6
+  await handlers.bottles.db.add(sqlite3_db, "burbon", 1.75); // id=7
+
+  // >>>> bottles (mixers)
+  await handlers.bottles.db.add(sqlite3_db, "coke", 2); // id=8
+  await handlers.bottles.db.add(sqlite3_db, "ginger ale", 2); // id=9
+  await handlers.bottles.db.add(sqlite3_db, "tonic", 2); // id=10
+  await handlers.bottles.db.add(sqlite3_db, "cranberry", 2); // id=11
+  await handlers.bottles.db.add(sqlite3_db, "lemon lime", 3.78541); // id=12
+
+  const four_oz_in_liters = 0.118294;
+  const shot_in_liters = 0.044;
+  const one_shot_chaser = four_oz_in_liters - shot_in_liters;
+
+  // >>>> drinks (RUM id=1)
+  await handlers.drinks.db.add(sqlite3_db, "Rum (neat)", [
+    { bottle_id: "1",  liters: shot_in_liters }
+  ]);
+
+  await handlers.drinks.db.add(sqlite3_db, "Rum Lemon-Lime", [
+    { bottle_id: "1",  liters: shot_in_liters },
+    { bottle_id: "12", liters: one_shot_chaser } //  - 0.044 =
+  ]);
+
+  await handlers.drinks.db.add(sqlite3_db, "Rum & Coke", [
+    { bottle_id: "1",  liters: shot_in_liters },
+    { bottle_id: "12", liters: one_shot_chaser }
+  ]);
+
+  // >>>> drinks (Gin id=2)
+  await handlers.drinks.db.add(sqlite3_db, "Gin (neat)", [
+    { bottle_id: "2",  liters: shot_in_liters }
+  ]);
+
+  await handlers.drinks.db.add(sqlite3_db, "Gin & Ginger Ale", [
+    { bottle_id: "2",  liters: shot_in_liters },
+    { bottle_id: "9",  liters: one_shot_chaser }
+  ]);
+
+  // >>>> drinks (VODKA id=3)
+  await handlers.drinks.db.add(sqlite3_db, "Vodka (neat)", [
+    { bottle_id: "3",  liters: shot_in_liters }
+  ]);
+
+  await handlers.drinks.db.add(sqlite3_db, "Vodka Tonic", [
+    { bottle_id: "3", liters: shot_in_liters },
+    { bottle_id: "10", liters: one_shot_chaser }
+  ]);
+
+  await handlers.drinks.db.add(sqlite3_db, "Vodka Cranberry", [
+    { bottle_id: "3", liters: shot_in_liters },
+    { bottle_id: "11", liters: one_shot_chaser }
+  ]);
+
+  // >>> drinks (SCOTCH id=4)
+  await handlers.drinks.db.add(sqlite3_db, "Scotch (neat)", [
+    { bottle_id: "4",  liters: shot_in_liters }
+  ]);
+
+  // >>> drinks (Irish_Whisky id=5)
+  await handlers.drinks.db.add(sqlite3_db, "Irish Whisky (neat)", [
+    { bottle_id: "5",  liters: shot_in_liters }
+  ]);
+
+  // >>> drinks ("tequila" id=6)
+  await handlers.drinks.db.add(sqlite3_db, "Tequila (neat)", [
+    { bottle_id: "6",  liters: shot_in_liters }
+  ]);
+
+  // >>> drinks ("burbon" id=7)
+  await handlers.drinks.db.add(sqlite3_db, "Burbon (neat)", [
+    { bottle_id: "7",  liters: shot_in_liters }
+  ]);
+
 }
 
 function configureRoutes(app, clientDir, sqlite3_db) {

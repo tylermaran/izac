@@ -4,6 +4,8 @@ const bottles = require('./bottles');
    Database handlers @todo: move to new file once stable
  */
 
+exports.db = {};
+
 const create_drink = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.run(`CREATE TABLE IF NOT EXISTS drink (
      id INTEGER PRIMARY KEY,
@@ -26,7 +28,7 @@ const create_drink_ingredient = (sqlite3_db) => new Promise((resolve, reject) =>
 const create = (sqlite3_db) => Promise.all([
   create_drink(sqlite3_db),
   create_drink_ingredient(sqlite3_db)
-])
+]);
 
 const getPoursForDrink = (sqlite3_db, drink_id) => new Promise((resolve, reject) =>
   sqlite3_db.all('SELECT * FROM drink_pour WHERE drink_id=?', [
@@ -72,11 +74,14 @@ const add = async (sqlite3_db, name, pours) => {
   const pour_statements = [];
 
   for (let i = 0; i < pours.length; i++) {
+    const bottleID = pours[i].bottle_id
+    const liters = pours[i].liters;
+
     pour_statements.push(await new Promise((resolve, reject) =>
       sqlite3_db.run(`INSERT INTO drink_pour (
         drink_id, bottle_id, liters
       ) VALUES (?, ?, ?);`, [
-        drinkID, pours[i].bottle_id, pours[i].liters
+        drinkID, bottleID, liters
       ], function(error) {
         return error ? reject(error) : resolve(this);
       })));
@@ -84,6 +89,8 @@ const add = async (sqlite3_db, name, pours) => {
 
   return { drink_statement, pour_statements };
 }
+
+exports.db.add = add;
 
 exports.initDatabase = create;
 
@@ -143,7 +150,7 @@ exports.getAll = (sqlite3_db) => async (req, res) => {
     const drinks = await getAll(sqlite3_db);
 
     if (!drinks) {
-      res.status(404).json({ error: 'drink not found' });
+      res.status(404).json({ error: 'no drinks not found' });
       return;
     }
 
@@ -164,6 +171,7 @@ exports.getAll = (sqlite3_db) => async (req, res) => {
           liters: pour.liters
         }))
       });
+
       data.drinks.push(entry);
     }
 

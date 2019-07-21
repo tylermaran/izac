@@ -1,8 +1,8 @@
 /**
    Database handlers @todo: move to new file once stable
-*/
+ */
 
-exports.db = {}
+exports.db = {};
 
 const create = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.run(`CREATE TABLE IF NOT EXISTS bottle (
@@ -47,6 +47,8 @@ const add = (sqlite3_db, name, max_liters) => new Promise((resolve, reject) =>
     return error ? reject(error) : resolve(this);
   }));
 
+exports.db.add = add;
+
 const refill = async (sqlite3_db, id) => {
   const bottle = await getById(sqlite3_db, id);
 
@@ -58,11 +60,13 @@ const refill = async (sqlite3_db, id) => {
     }));
 }
 
-exports.initDatabase = create;
+exports.initDatabase = async (sqlite3_db) => {
+  await create(sqlite3_db);
+}
 
 /**
    @todo: move to new file once stable.
-*/
+ */
 
 exports.get = (sqlite3_db) => async (req, res) => {
   const invalidations = [];
