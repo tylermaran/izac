@@ -2,6 +2,10 @@
 
 const path = require('path');
 const Server = require('../src/server');
+const pins = require('../src/pins');
+
+console.log('raspberry pi pinouts:');
+console.log(pins);
 
 const cwd = process.cwd(); // store all files we create in the cwd.
 
