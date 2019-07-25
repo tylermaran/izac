@@ -22,7 +22,7 @@ pins = {
   bottle_tonic: 24, // peristaltic pump
   bottle_tonic_reverse: 26,  // peristaltic pump (in reverse)
 
-  bottle_lemon_lime: 29, // peristaltic pump
+  bottle_lemon_lime: 29, // air pump
 
   bottle_cranberry: 31, // air pump
 

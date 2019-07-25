@@ -368,7 +368,7 @@ exports.pour = (sqlite3_db) => async (req, res) => {
         let pour_duration_ms = get_air_bottle_pour_duration(
           pour.liters, bottle.current_liters, bottle.max_liters);
 
-        console.log(`(air) pouring '${bottle.name}' with duration ${pour_duration_ms}`);
+        console.log(`(air) pouring '${bottle.name}' with duration ${pour_duration_ms}, on pin ${bottle.rpi_pin_1}`);
 
         // fire the pin. it siphens back into the containers.
         return robots.on_then_off(bottle.rpi_pin_1, pour_duration_ms);
