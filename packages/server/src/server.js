@@ -11,16 +11,8 @@ module.exports = class Server {
   constructor(options) {
     this.server;
     this.port = options.port;
-
-    console.log('options.sqlite3.filename', options.sqlite3.filename);
-
-    // TOOD: hack for bar competition. don't do this.
-    if (fs.existsSync(options.sqlite3.filename)) {
-      console.log('deleting old database');
-      fs.unlinkSync(options.sqlite3.filename);
-    }
-
     this.sqlite3_db = new sqlite3.Database(options.sqlite3.filename);
+
     this.app = express();
 
     this.app.use(cors(options.cors));
