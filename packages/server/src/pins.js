@@ -5,8 +5,8 @@
 //
 
 pins = {
-  bottle_rum: 7, // air pump
-  bottle_gin: 11, // air pump
+  bottle_rum: 11, // air pump
+  bottle_gin: 29, // air pump
   bottle_vodka: 12, // air pump
   bottle_scotch: 13, // air pump
   bottle_irish_whisky: 15, // air pump
@@ -22,7 +22,7 @@ pins = {
   bottle_tonic: 24, // peristaltic pump
   bottle_tonic_reverse: 26,  // peristaltic pump (in reverse)
 
-  bottle_lemon_lime: 29, // air pump
+  bottle_lemon_lime: 7, // air pump
 
   bottle_cranberry: 31, // air pump
 

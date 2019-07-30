@@ -3,8 +3,13 @@ const pins = require('./pins');
 
 exports.on_then_off = (pin, ms) => new Promise((resolve, reject) => {
     rpio.open(pin, rpio.OUTPUT, rpio.LOW);
-    rpio.write(pin, rpio.LOW);
+  rpio.write(pin, rpio.LOW);
+
+  console.log('---=-=-=----');
+  console.log('firing pin', pin);
+
     setTimeout(() => {
+
       rpio.write(pin, rpio.HIGH);
       resolve();
     }, ms);

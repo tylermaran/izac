@@ -32,7 +32,7 @@ module.exports = class Server {
 
   async start() {
     await initDatabase(this.sqlite3_db);
-    return new Promise(r => this.server = this.app.listen(this.port, r));
+    return new Promise(r => this.servqer = this.app.listen(this.port, r));
   }
 
   async stop() {
@@ -163,6 +163,8 @@ function configureRoutes(app, clientDir, sqlite3_db) {
   app.get('/drinks/:id', handlers.drinks.get(sqlite3_db));
   app.post('/drinks', handlers.drinks.add(sqlite3_db));
   app.post('/drinks/:id/pour', handlers.drinks.pour(sqlite3_db));
+
+  app.post('/admin/pins/:pin/fire', handlers.admin.pins.fire);
 
   // We only concern ourselves with client routes when we're
   // serving up a generated bundle in production.
