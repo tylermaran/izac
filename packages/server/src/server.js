@@ -6,7 +6,9 @@ const handlers = require('./handlers');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 const pins = require('./pins');
+
 const bottleDB = require('./db/bottle');
+const drinkDB = require('./db/drink');
 
 module.exports = class Server {
   constructor(options) {
@@ -35,7 +37,7 @@ module.exports = class Server {
 
 async function initDatabase(sqlite3_db) {
   await bottleDB.create(sqlite3_db);
-  await handlers.drinks.initDatabase(sqlite3_db);
+  await drinkDB.create(sqlite3_db);
 
   // >>>> bottles (liquor)
   await bottleDB.add(
@@ -75,62 +77,62 @@ async function initDatabase(sqlite3_db) {
   const one_shot_chaser = four_oz_in_liters - shot_in_liters;
 
   // >>>> drinks (RUM id=1)
-  await handlers.drinks.db.add(sqlite3_db, "Rum (neat)", [
+  await drinkDB.add(sqlite3_db, "Rum (neat)", [
     { bottle_id: "1",  liters: shot_in_liters }
   ]);
 
-  await handlers.drinks.db.add(sqlite3_db, "Rum Lemon-Lime", [
+  await drinkDB.add(sqlite3_db, "Rum Lemon-Lime", [
     { bottle_id: "1",  liters: shot_in_liters },
     { bottle_id: "12", liters: one_shot_chaser } //  - 0.044 =
   ]);
 
-  await handlers.drinks.db.add(sqlite3_db, "Rum & Coke", [
+  await drinkDB.add(sqlite3_db, "Rum & Coke", [
     { bottle_id: "1",  liters: shot_in_liters },
     { bottle_id: "12", liters: one_shot_chaser }
   ]);
 
   // >>>> drinks (Gin id=2)
-  await handlers.drinks.db.add(sqlite3_db, "Gin (neat)", [
+  await drinkDB.add(sqlite3_db, "Gin (neat)", [
     { bottle_id: "2",  liters: shot_in_liters }
   ]);
 
-  await handlers.drinks.db.add(sqlite3_db, "Gin & Ginger Ale", [
+  await drinkDB.add(sqlite3_db, "Gin & Ginger Ale", [
     { bottle_id: "2",  liters: shot_in_liters },
     { bottle_id: "9",  liters: one_shot_chaser }
   ]);
 
   // >>>> drinks (VODKA id=3)
-  await handlers.drinks.db.add(sqlite3_db, "Vodka (neat)", [
+  await drinkDB.add(sqlite3_db, "Vodka (neat)", [
     { bottle_id: "3",  liters: shot_in_liters }
   ]);
 
-  await handlers.drinks.db.add(sqlite3_db, "Vodka Tonic", [
+  await drinkDB.add(sqlite3_db, "Vodka Tonic", [
     { bottle_id: "3", liters: shot_in_liters },
     { bottle_id: "10", liters: one_shot_chaser }
   ]);
 
-  await handlers.drinks.db.add(sqlite3_db, "Vodka Cranberry", [
+  await drinkDB.add(sqlite3_db, "Vodka Cranberry", [
     { bottle_id: "3", liters: shot_in_liters },
     { bottle_id: "11", liters: one_shot_chaser }
   ]);
 
   // >>> drinks (SCOTCH id=4)
-  await handlers.drinks.db.add(sqlite3_db, "Scotch (neat)", [
+  await drinkDB.add(sqlite3_db, "Scotch (neat)", [
     { bottle_id: "4",  liters: shot_in_liters }
   ]);
 
   // >>> drinks (Irish_Whisky id=5)
-  await handlers.drinks.db.add(sqlite3_db, "Irish Whisky (neat)", [
+  await drinkDB.add(sqlite3_db, "Irish Whisky (neat)", [
     { bottle_id: "5",  liters: shot_in_liters }
   ]);
 
   // >>> drinks ("tequila" id=6)
-  await handlers.drinks.db.add(sqlite3_db, "Tequila (neat)", [
+  await drinkDB.add(sqlite3_db, "Tequila (neat)", [
     { bottle_id: "6",  liters: shot_in_liters }
   ]);
 
   // >>> drinks ("burbon" id=7)
-  await handlers.drinks.db.add(sqlite3_db, "Burbon (neat)", [
+  await drinkDB.add(sqlite3_db, "Burbon (neat)", [
     { bottle_id: "7",  liters: shot_in_liters }
   ]);
 
