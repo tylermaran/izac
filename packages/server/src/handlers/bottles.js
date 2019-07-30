@@ -1,84 +1,4 @@
-/**
-   Database handlers @todo: move to new file once stable
- */
-
-exports.db = {};
-
-const create = (sqlite3_db) => new Promise((resolve, reject) =>
-  sqlite3_db.run(`CREATE TABLE IF NOT EXISTS bottle (
-     id INTEGER PRIMARY KEY,
-     name TEXT NOT NULL,
-     max_liters REAL NOT NULL,
-     current_liters REAL NOT NULL,
-     pump_type TEXT NOT NULL,
-     rpi_pin_1 INTEGER NOT NULL UNIQUE,
-     rpi_pin_2 INTEGER
-   );`, [], function(error) { // must use function as `this` is utilized in lib-sqlite3
-     return error ? reject(error) : resolve(this);
-   }));
-
-const getAll = (sqlite3_db) => new Promise((resolve, reject) =>
-  sqlite3_db.all('SELECT * FROM bottle', [], function(error, rows) {
-    return error ? reject(error) : resolve(rows)
-  }));
-
-const getById = (sqlite3_db, id) => new Promise((resolve, reject) =>
-  sqlite3_db.get('SELECT * FROM bottle WHERE id=?', [
-    id
-  ], function(error, result) {
-    return error ? reject(error) : resolve(result);
-  }));
-
-exports.db.getById = getById;
-
-const setBottleLevel = (sqlite3_db, bottle_id, new_liters) => new Promise((resolve, reject) =>
-  sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [
-    new_liters,
-    bottle_id
-  ], function(error) {
-    return error ? reject(error) : resolve(this);
-  }));
-
-exports.db.setBottleLevel = setBottleLevel;
-
-const add = (sqlite3_db, name, max_liters, pump_type, rpi_pin_1, rpi_pin_2) => new Promise((resolve, reject) => {
-
-  const sql = `INSERT INTO bottle (
-    name, max_liters, current_liters, pump_type, rpi_pin_1, rpi_pin_2
-  ) VALUES (?, ?, ?, ?, ?, ?);`;
-
-  const params = [
-    name, max_liters, max_liters, pump_type, rpi_pin_1, rpi_pin_2
-  ];
-
-  console.log(sql);
-  console.log(params);
-
-  sqlite3_db.run(sql, params, function(error) {
-    return error ? reject(error) : resolve(this);
-  });
-});
-
-exports.db.add = add;
-
-const refill = async (sqlite3_db, id) => {
-  const bottle = await getById(sqlite3_db, id);
-
-  return new Promise((resolve, reject) =>
-    sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [
-      bottle.max_liters, id
-    ], function(error) {
-      return error ? reject(error) : resolve(this);
-    }));
-}
-
-exports.initDatabase = async (sqlite3_db) => {
-  await create(sqlite3_db);
-}
-
-/**
-   @todo: move to new file once stable.
- */
+const bottleDB = require('../db/bottle');
 
 exports.get = (sqlite3_db) => async (req, res) => {
   const invalidations = [];
@@ -94,7 +14,7 @@ exports.get = (sqlite3_db) => async (req, res) => {
   }
 
   try {
-    const bottle = await getById(sqlite3_db, id);
+    const bottle = await bottleDB.getById(sqlite3_db, id);
     if (bottle) {
       res.status(200).json(bottle);
     } else {
@@ -109,7 +29,7 @@ exports.get = (sqlite3_db) => async (req, res) => {
 
 exports.getAll = (sqlite3_db) => async (req, res) => {
   try {
-    const bottles = await getAll(sqlite3_db);
+    const bottles = await bottleDB.getAll(sqlite3_db);
     if (bottles) {
       res.status(200).json({ bottles });
     } else {
@@ -142,8 +62,8 @@ exports.add = (sqlite3_db) => async (req, res) => {
   try {
     // TODO: this is broken with the new add syntax. Fix me when we have
     // a UI that can add new drinks.
-    const statement = await add(sqlite3_db, name, max_liters);
-    const bottle = await getById(sqlite3_db, statement.lastID);
+    const statement = await bottleDB.add(sqlite3_db, name, max_liters);
+    const bottle = await bottleDB.getById(sqlite3_db, statement.lastID);
     res.status(200).json(bottle);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
@@ -166,7 +86,7 @@ exports.refill = async (req, res) => {
   }
 
   try {
-    const bottle = await getById(sqlite3_db, id);
+    const bottle = await bottleDB.getById(sqlite3_db, id);
     res.json(bottle);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;

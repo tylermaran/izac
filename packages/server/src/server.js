@@ -6,6 +6,7 @@ const handlers = require('./handlers');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 const pins = require('./pins');
+const bottleDB = require('./db/bottle');
 
 module.exports = class Server {
   constructor(options) {
@@ -33,45 +34,39 @@ module.exports = class Server {
 }
 
 async function initDatabase(sqlite3_db) {
-  await handlers.bottles.initDatabase(sqlite3_db);
+  await bottleDB.create(sqlite3_db);
   await handlers.drinks.initDatabase(sqlite3_db);
 
-  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
-  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
-  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
-  // TODO: !!! HACK 4 COMPETITION @ DNA LOUNGE: FIX THIS SHIT !!!
-  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv !!!
-
   // >>>> bottles (liquor)
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "rum", 1.75, 'air', pins.bottle_rum); // id=1
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "gin", 1.75, 'air', pins.bottle_gin); // id=2
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "vodka", 1.75, 'air', pins.bottle_vodka); // id=3
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "scotch", 1.75, 'air', pins.bottle_scotch); // id=4
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "irish whisky", 1.75, 'air', pins.bottle_irish_whisky); // id=5
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "tequila", 1.75, 'air', pins.bottle_tequila); // id=6
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "burbon", 1.75, 'air', pins.bottle_burbon); // id=7
 
   // >>>> bottles (mixers)
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "coke", 2, 'peristaltic',
     pins.bottle_coke, pins.bottle_coke_reverse); // id=8
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "ginger ale", 2, 'peristaltic',
     pins.bottle_ginger_ale, pins.bottle_ginger_ale_reverse); // id=9
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "tonic", 2, 'peristaltic',
     pins.bottle_tonic, pins.bottle_tonic_reverse); // id=10
 
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "lemon lime", 2, 'air', pins.bottle_lemon_lime); // id=11
-  await handlers.bottles.db.add(
+  await bottleDB.add(
     sqlite3_db, "cranberry", 3.78541, 'air', pins.bottle_cranberry); // id=12
 
 
