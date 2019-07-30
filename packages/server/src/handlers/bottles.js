@@ -1,6 +1,4 @@
-const bottleDB = require('../db/bottle');
-
-exports.get = (sqlite3_db) => async (req, res) => {
+exports.get = (db) => async (req, res) => {
   const invalidations = [];
   const { id } = req.params;
 
@@ -14,7 +12,7 @@ exports.get = (sqlite3_db) => async (req, res) => {
   }
 
   try {
-    const bottle = await bottleDB.getById(sqlite3_db, id);
+    const bottle = await db.bottle.getById(id);
     if (bottle) {
       res.status(200).json(bottle);
     } else {
@@ -27,9 +25,9 @@ exports.get = (sqlite3_db) => async (req, res) => {
   }
 };
 
-exports.getAll = (sqlite3_db) => async (req, res) => {
+exports.getAll = (db) => async (req, res) => {
   try {
-    const bottles = await bottleDB.getAll(sqlite3_db);
+    const bottles = await db.bottle.getAll();
     if (bottles) {
       res.status(200).json({ bottles });
     } else {
@@ -42,7 +40,7 @@ exports.getAll = (sqlite3_db) => async (req, res) => {
   }
 };
 
-exports.add = (sqlite3_db) => async (req, res) => {
+exports.add = (db) => async (req, res) => {
   const invalidations = [];
   const { name, max_liters } = req.body;
 
@@ -62,8 +60,8 @@ exports.add = (sqlite3_db) => async (req, res) => {
   try {
     // TODO: this is broken with the new add syntax. Fix me when we have
     // a UI that can add new drinks.
-    const statement = await bottleDB.add(sqlite3_db, name, max_liters);
-    const bottle = await bottleDB.getById(sqlite3_db, statement.lastID);
+    const statement = await db.bottle.add(name, max_liters);
+    const bottle = await db.bottle.getById(statement.lastID);
     res.status(200).json(bottle);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
@@ -72,7 +70,7 @@ exports.add = (sqlite3_db) => async (req, res) => {
   }
 };
 
-exports.refill = async (req, res) => {
+exports.refill = (db) => async (req, res) => {
   const invalidations = [];
   const { id } = req.params;
 
@@ -86,7 +84,7 @@ exports.refill = async (req, res) => {
   }
 
   try {
-    const bottle = await bottleDB.getById(sqlite3_db, id);
+    const bottle = await db.bottle.getById(id);
     res.json(bottle);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;

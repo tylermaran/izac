@@ -1,18 +1,8 @@
 const rpio = require('rpio');
 const bottles = require('./bottles');
 const robots = require('../robots');
-const drinkDB = require('../db/drink');
 
-/**
-   Database handlers @todo: move to new file once stable
- */
-
-
-/**
-   @todo: move to new file once stable.
- */
-
-exports.get = (sqlite3_db) => async (req, res) => {
+exports.get = (db) => async (req, res) => {
   const invalidations = [];
   const { id } = req.params;
 
@@ -26,14 +16,14 @@ exports.get = (sqlite3_db) => async (req, res) => {
   }
 
   try {
-    const drink = await getById(sqlite3_db, id);
+    const drink = await db.drink.getById(id);
 
     if (!drink) {
       res.status(404).json({ error: 'drink not found' });
       return;
     }
 
-    const pours = await getPoursForDrink(sqlite3_db, drink.id);
+    const pours = await db.drink.getPoursForDrink(drink.id);
     if (!pours) {
       res.status(404).json({ error: `pours for drink ${drink.id} not found` });
       return;
@@ -55,13 +45,13 @@ exports.get = (sqlite3_db) => async (req, res) => {
   }
 };
 
-exports.getAll = (sqlite3_db) => async (req, res) => {
+exports.getAll = (db) => async (req, res) => {
   try {
     const data = {
       drinks: []
     };
 
-    const drinks = await getAll(sqlite3_db);
+    const drinks = await db.drink.getAll();
 
     if (!drinks) {
       res.status(404).json({ error: 'no drinks not found' });
@@ -98,7 +88,7 @@ exports.getAll = (sqlite3_db) => async (req, res) => {
   }
 };
 
-exports.add = (sqlite3_db) => async (req, res) => {
+exports.add = (db) => async (req, res) => {
   const invalidations = [];
   const { name, pours } = req.body;
 
@@ -125,10 +115,10 @@ exports.add = (sqlite3_db) => async (req, res) => {
   }
 
   try {
-    const add_result = await add(sqlite3_db, name, pours);
+    const add_result = await db.drink.add(name, pours);
     const drink_id = add_result.drink_statement.lastID;
-    const drink = await getById(sqlite3_db, drink_id);
-    const db_pours = await getPoursForDrink(sqlite3_db, drink.id);
+    const drink = await db.drink.getById(drink_id);
+    const db_pours = await db.drink.getPoursForDrink(drink.id);
 
     res.status(200).json(Object.assign({}, drink, {
       pours: db_pours.map(pour => ({
@@ -217,7 +207,7 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
   return Math.round(actual_duration);
 }
 
-exports.pour = (sqlite3_db) => async (req, res) => {
+exports.pour = (db) => async (req, res) => {
 
   const invalidations = [];
   const { id } = req.params;
@@ -232,7 +222,7 @@ exports.pour = (sqlite3_db) => async (req, res) => {
   }
 
   try {
-    const drink = await getById(sqlite3_db, id);
+    const drink = await db.drink.getById(id);
     if (!drink) {
       res.status(404).json({ error: 'drink not found' });
       return;
@@ -241,7 +231,7 @@ exports.pour = (sqlite3_db) => async (req, res) => {
     console.log('------ drink -------');
     console.log(drink);
 
-    const pours = await getPoursForDrink(sqlite3_db, id);
+    const pours = db.drink.getPoursForDrink(id);
     if (pours.length <= 0) {
       res.status(404).json({
         error: 'pours for drink (id=${drink.id}) not found'
@@ -254,16 +244,14 @@ exports.pour = (sqlite3_db) => async (req, res) => {
     for (let i = 0; i < pours.length; i++) {
       const pour = pours[i];
 
-      const bottle = await bottles.db.getById(sqlite3_db,
-                                              pour.bottle_id);
+      const bottle = await db.bottle.getById(pour.bottle_id);
 
       robotPours.push({ pour, bottle });
 
       const new_bottle_liters = bottle.current_liters - pour.liters;
 
-      await bottles.db.setBottleLevel(sqlite3_db,
-                                      pour.bottle_id,
-                                      new_bottle_liters);
+      await db.bottle.setBottleLevel(pour.bottle_id,
+                                     new_bottle_liters);
     }
 
     await Promise.all([
