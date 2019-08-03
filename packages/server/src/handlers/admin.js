@@ -112,7 +112,7 @@ exports.database.init = (db) => async (req, res) => {
   const { lastID: tequilaBottleID } = await db.bottle.add(
     "tequila", 1.75, tequilaDeviceID);
   const { lastID: lemonLimeBottleID } = await db.bottle.add(
-    "lemon lime", 2, 'air', lemonLimeDeviceID);
+    "lemon lime", 2, lemonLimeDeviceID);
   const { lastID: cokeBottleID } = await db.bottle.add(
     "coke", 2, cokeDeviceID);
   const { lastID: gingerAleBottleID } = await db.bottle.add(
@@ -137,7 +137,7 @@ exports.database.init = (db) => async (req, res) => {
 
   await db.drink.add("Rum & Coke", [
     { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS },
-    { bottle_id: lemonLimeBottleID, liters: ONE_SHOT_CHASER }
+    { bottle_id: cokeBottleID, liters: ONE_SHOT_CHASER }
   ]);
 
   await db.drink.add("Gin (neat)", [

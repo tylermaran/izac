@@ -21,3 +21,11 @@ exports.getByName = (sqlite3_db, name) => new Promise((resolve, reject) =>
   ], function(error, result) {
     return error ? reject(error) : resolve(result);
   }));
+
+
+exports.getById = (sqlite3_db, id) => new Promise((resolve, reject) =>
+  sqlite3_db.get('SELECT * FROM device_action WHERE id=?', [
+    id
+  ], function(error, result) {
+    return error ? reject(error) : resolve(result);
+  }));

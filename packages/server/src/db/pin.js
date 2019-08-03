@@ -1,3 +1,5 @@
+const device = require('./device');
+
 // device_id  ---------------------------- device this pin belongs to
 // physical_pin_number ------------------- physical pin number on device
 // attached_device_id -------------------- what device is attached to the pin?
@@ -27,3 +29,12 @@ exports.add = (sqlite3_db, device_id, physical_pin_number, attached_device_id, d
     return error ? reject(error) : resolve(this);
   });
 });
+
+exports.getAllForAttachedDevice = (sqlite3_db, attached_device_id) =>
+  new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM pin WHERE attached_device_id = ?';
+    const params = [ attached_device_id ];
+    sqlite3_db.all(sql, params, function(error, rows) {
+      return error ? reject(error) : resolve(rows)
+    });
+  });

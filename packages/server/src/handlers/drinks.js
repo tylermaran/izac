@@ -210,7 +210,9 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
 exports.pour = (db) => async (req, res) => {
 
   const invalidations = [];
-  const { id } = req.params;
+  const {
+    id // drink_id
+  } = req.params;
 
   if (typeof id !== 'string') {
     invalidations.push('missing required parameter id');
@@ -228,10 +230,9 @@ exports.pour = (db) => async (req, res) => {
       return;
     }
 
-    console.log('------ drink -------');
-    console.log(drink);
+    console.log('drink: ', drink);
 
-    const pours = db.drink_pour.getPoursForDrink(id);
+    const pours = await db.drink_pour.getPoursForDrink(id);
     if (pours.length <= 0) {
       res.status(404).json({
         error: 'pours for drink (id=${drink.id}) not found'
@@ -243,51 +244,118 @@ exports.pour = (db) => async (req, res) => {
 
     for (let i = 0; i < pours.length; i++) {
       const pour = pours[i];
-
       const bottle = await db.bottle.getById(pour.bottle_id);
 
-      robotPours.push({ pour, bottle });
+      console.log('>> bottle:', bottle)
+
+      const device = await db.device.getByBottleID(bottle.id);
+
+      console.log('>> device:', device);
+
+      const device_type = await db.device_type.getById(device.device_type_id);
+      const pins = await db.pin.getAllForAttachedDevice(device.id);
+      const device_actions = [];
+
+      for (let i = 0; i < pins.length; i++) {
+        device_actions.push(await db.device_action.getById(pins[i].device_action_id));
+      }
 
       const new_bottle_liters = bottle.current_liters - pour.liters;
 
-      await db.bottle.setBottleLevel(pour.bottle_id,
-                                     new_bottle_liters);
+      await db.bottle.setBottleLevel(bottle.id, new_bottle_liters);
+
+      robotPours.push({ pour, bottle, device, device_type, device_actions, pins });
     }
+
+    console.log(JSON.stringify(robotPours, null, 4));
 
     await Promise.all([
       // of course, all drinks get a straw
-      robots.dispense_straw().then(() => {
+      robots.dispenseStraw().then(() => {
         console.log('finished dispensing straw');
       }),
 
     ].concat(robotPours.map(roboPour => { // construct all pours
 
-      const { bottle, pour } = roboPour;
+      const { pour, bottle, device, device_type, device_actions, pins } = roboPour;
 
-      if (bottle.pump_type === 'air') {
-        let pour_duration_ms = get_air_bottle_pour_duration(
-          pour.liters, bottle.current_liters, bottle.max_liters);
+      let pour_duration_ms, pin;
 
-        console.log(`(air) pouring '${bottle.name}' with duration ${pour_duration_ms}, on pin ${bottle.rpi_pin_1}`);
+      switch (device_type.name) {
+        case 'air_pump':
+          pour_duration_ms = get_air_bottle_pour_duration(
+            pour.liters, bottle.current_liters, bottle.max_liters);
 
-        // fire the pin. it siphens back into the containers.
-        return robots.on_then_off(bottle.rpi_pin_1, pour_duration_ms);
+          const pin = pins[0].physical_pin_number;
 
-      } else if (bottle.pump_type === 'peristaltic') {
+          console.log(
+            `(air, pin=${pin}, duration=${pour_duration_ms}) pouring '${bottle.name}'`);
 
-        let pour_duration_ms = get_peristaltic_bottle_pour_duration(pour.liters);
+          console.log('air:::firing');
 
-        console.log(`(per) pouring '${bottle.name}' with duration ${pour_duration_ms}`);
+          return robots.on_then_off(pin, pour_duration_ms).then(() => {
+            console.log('air:::done!');
+          });
 
-        console.log('[[bottle]]', bottle);
+        case 'peristaltic_pump':
+          pour_duration_ms = get_peristaltic_bottle_pour_duration(pour.liters);
 
-        // fire the pump in the forward direction
-        return robots.on_then_off(bottle.rpi_pin_1, pour_duration_ms).then(() => {
-          // suck it all back with a 100ms buffer
-          robots.on_then_off(bottle.rpi_pin_2, (pour_duration_ms + 100));
-        });
+          const forwardPin = (function() {
+            let action_id;
+            for (let x = 0; x < device_actions.length; x++) {
+              if (device_actions[x].name === 'pump_forward') {
+                action_id = device_actions[x].id;
+                break;
+              }
+            }
+
+            let physical_pin_number;
+            for (let y = 0; y < pins.length; y++) {
+              if (pins[y].device_action_id === action_id) {
+                physical_pin_number = pins[y].physical_pin_number;
+              }
+            }
+
+            return physical_pin_number;
+          })();
+
+          const reversePin = (function() {
+            let action_id;
+            for (let x = 0; x < device_actions.length; x++) {
+              if (device_actions[x].name === 'pump_reverse') {
+                action_id = device_actions[x].id;
+                break;
+              }
+            }
+
+            let physical_pin_number;
+            for (let y = 0; y < pins.length; y++) {
+              if (pins[y].device_action_id === action_id) {
+                physical_pin_number = pins[y].physical_pin_number;
+              }
+            }
+
+            return physical_pin_number;
+          })();
+
+          console.log(
+            `(peri, pin_f=${forwardPin}, pin_r=${reversePin},
+              duration=${pour_duration_ms}, pouring='${bottle.name}'
+            `);
+
+
+          console.log(`peri:::firing forward pin ${forwardPin}`);
+          // fire the pump in the forward direction
+          return robots.on_then_off(forwardPin, pour_duration_ms).then(() => {
+            console.log('peri:::done w/ forward!');
+            // suck it all back with a 100ms buffer
+
+            console.log(`peri:::firing reverse pin ${forwardPin}`);
+            return robots.on_then_off(reversePin, (pour_duration_ms + 100)).then(() => {
+              console.log('peri:::done w/ reverse!');
+            });
+          });
       }
-
     })));
 
     res.status(200).json(Object.assign({}, drink, {

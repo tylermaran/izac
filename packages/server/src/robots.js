@@ -1,5 +1,7 @@
 const rpio = require('rpio');
 
+exports.dispenseStraw = () => Promise.resolve(); // @TODO
+
 exports.on_then_off = (pin, ms) => new Promise((resolve, reject) => {
   rpio.open(pin, rpio.OUTPUT, rpio.LOW);
   rpio.write(pin, rpio.LOW);
