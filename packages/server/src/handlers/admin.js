@@ -36,6 +36,7 @@ exports.database.init = (db) => async (req, res) => {
   await db.pin.create();
   await db.bottle.create();
   await db.drink.create();
+  await db.drink_pour.create();
 
   //
   // >>>> device types
@@ -159,6 +160,8 @@ exports.database.init = (db) => async (req, res) => {
   await db.drink.add("Tequila (neat)", [
     { bottle_id: tequilaBottleID,  liters: SHOT_IN_LITERS }
   ]);
+
+  console.log('done!');
 
   res.status(204).end();
 };

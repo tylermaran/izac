@@ -23,7 +23,7 @@ exports.get = (db) => async (req, res) => {
       return;
     }
 
-    const pours = await db.drink.getPoursForDrink(drink.id);
+    const pours = await db.drink_pours.getPoursForDrink(drink.id);
     if (!pours) {
       res.status(404).json({ error: `pours for drink ${drink.id} not found` });
       return;
@@ -61,7 +61,7 @@ exports.getAll = (db) => async (req, res) => {
     for (let i = 0; i < drinks.length; i++) {
       const drink = drinks[i];
 
-      const pours = await getPoursForDrink(sqlite3_db, drink.id);
+      const pours = await db.drink_pour.getPoursForDrink(drink.id);
       if (!pours) {
         res.status(404).json({
           error: `pours for drink (id=${drink.id}) not found`
@@ -118,7 +118,7 @@ exports.add = (db) => async (req, res) => {
     const add_result = await db.drink.add(name, pours);
     const drink_id = add_result.drink_statement.lastID;
     const drink = await db.drink.getById(drink_id);
-    const db_pours = await db.drink.getPoursForDrink(drink.id);
+    const db_pours = await db.drink_pour.getPoursForDrink(drink.id);
 
     res.status(200).json(Object.assign({}, drink, {
       pours: db_pours.map(pour => ({
@@ -231,7 +231,7 @@ exports.pour = (db) => async (req, res) => {
     console.log('------ drink -------');
     console.log(drink);
 
-    const pours = db.drink.getPoursForDrink(id);
+    const pours = db.drink_pour.getPoursForDrink(id);
     if (pours.length <= 0) {
       res.status(404).json({
         error: 'pours for drink (id=${drink.id}) not found'

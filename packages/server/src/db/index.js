@@ -10,7 +10,9 @@ module.exports = class Database {
     // for every call!
 
     [
-      'bottle', 'drink', 'device', 'device_type', 'device_action', 'pin'
+      'device_type', 'device_action', 'device', 'pin',
+      'bottle',
+      'drink', 'drink_pour',
     ].forEach(module_name => {
       const mod = require(`./${module_name}`);
 
