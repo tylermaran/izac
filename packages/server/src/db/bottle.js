@@ -4,9 +4,8 @@ exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
      name TEXT NOT NULL,
      max_liters REAL NOT NULL,
      current_liters REAL NOT NULL,
-     pump_type TEXT NOT NULL,
-     rpi_pin_1 INTEGER NOT NULL UNIQUE,
-     rpi_pin_2 INTEGER
+     attached_device_id INTEGER,
+     FOREIGN KEY(attached_device_id) REFERENCES device(id)
    );`, [], function(error) { // must use function as `this` is utilized in lib-sqlite3
      return error ? reject(error) : resolve(this);
    }));
@@ -31,18 +30,15 @@ exports.setBottleLevel = (sqlite3_db, bottle_id, new_liters) => new Promise((res
     return error ? reject(error) : resolve(this);
   }));
 
-exports.add = (sqlite3_db, name, max_liters, pump_type, rpi_pin_1, rpi_pin_2) => new Promise((resolve, reject) => {
+exports.add = (sqlite3_db, name, max_liters, attached_device_id) => new Promise((resolve, reject) => {
 
   const sql = `INSERT INTO bottle (
-    name, max_liters, current_liters, pump_type, rpi_pin_1, rpi_pin_2
-  ) VALUES (?, ?, ?, ?, ?, ?);`;
+    name, max_liters, current_liters, attached_device_id
+  ) VALUES (?, ?, ?, ?);`;
 
   const params = [
-    name, max_liters, max_liters, pump_type, rpi_pin_1, rpi_pin_2
+    name, max_liters, max_liters, attached_device_id
   ];
-
-  console.log(sql);
-  console.log(params);
 
   sqlite3_db.run(sql, params, function(error) {
     return error ? reject(error) : resolve(this);

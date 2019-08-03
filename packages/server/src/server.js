@@ -5,7 +5,6 @@ const cors = require('cors');
 const handlers = require('./handlers');
 
 const fs = require('fs');
-const pins = require('./pins');
 
 const Database = require('./db');
 
@@ -24,7 +23,7 @@ module.exports = class Server {
   }
 
   async start() {
-    return new Promise(r => this.servqer = this.app.listen(this.port, r));
+    return new Promise(r => this.server = this.app.listen(this.port, r));
   }
 
   async stop() {

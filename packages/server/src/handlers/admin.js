@@ -1,4 +1,9 @@
 const rpio = require('rpio');
+const { pin } = require('../robots');
+
+const FOUR_OZ_IN_LITERS = 0.118294;
+const SHOT_IN_LITERS = 0.044;
+const ONE_SHOT_CHASER = FOUR_OZ_IN_LITERS - SHOT_IN_LITERS;
 
 exports.pins = {};
 
@@ -24,91 +29,135 @@ exports.pins.fire = (req, res) => {
 exports.database = {};
 
 exports.database.init = (db) => async (req, res) => {
+
+  await db.device_type.create();
+  await db.device_action.create();
+  await db.device.create();
+  await db.pin.create();
   await db.bottle.create();
   await db.drink.create();
 
-  // >>>> bottles (liquor)
-  await db.bottle.add("rum", 1.75, 'air', pins.bottle_rum); // id=1
-  await db.bottle.add("gin", 1.75, 'air', pins.bottle_gin); // id=2
-  await db.bottle.add("vodka", 1.75, 'air', pins.bottle_vodka); // id=3
-  await db.bottle.add("scotch", 1.75, 'air', pins.bottle_scotch); // id=4
-  await db.bottle.add("irish whisky", 1.75, 'air', pins.bottle_irish_whisky); // id=5
-  await db.bottle.add("tequila", 1.75, 'air', pins.bottle_tequila); // id=6
-  await db.bottle.add("burbon", 1.75, 'air', pins.bottle_burbon); // id=7
+  //
+  // >>>> device types
+  //
+  console.log('adding device types...');
 
-  // >>>> bottles (mixers)
-  await db.bottle.add("coke", 2, 'peristaltic',
-                      pins.bottle_coke, pins.bottle_coke_reverse); // id=8
-  await db.bottle.add("ginger ale", 2, 'peristaltic',
-                      pins.bottle_ginger_ale, pins.bottle_ginger_ale_reverse); // id=9
-  await db.bottle.add("tonic", 2, 'peristaltic',
-                      pins.bottle_tonic, pins.bottle_tonic_reverse); // id=10
+  const { lastID: piTypeID } = await db.device_type.add('raspberry_pi_3_b+');
+  const { lastID: periPumpTypeID } = await db.device_type.add('peristaltic_pump');
+  const { lastID: airPumpTypeID } = await db.device_type.add('air_pump');
+  const { lastID: strawDispenserTypeID } = await db.device_type.add('straw_dispenser');
 
-  await db.bottle.add("lemon lime", 2, 'air', pins.bottle_lemon_lime); // id=11
-  await db.bottle.add("cranberry", 3.78541, 'air', pins.bottle_cranberry); // id=12
+  //
+  // >>>> device actions
+  //
+  console.log('adding device actions...');
 
-  const four_oz_in_liters = 0.118294;
-  const shot_in_liters = 0.044;
-  const one_shot_chaser = four_oz_in_liters - shot_in_liters;
+  const { lastID: actionPumpForwardID } = await db.device_action.add('pump_forward');
+  const { lastID: actionPumpReverseID } = await db.device_action.add('pump_reverse');
+  const { lastID: actionDispenseID } = await db.device_action.add('dispense');
 
-  // >>>> drinks (RUM id=1)
+  //
+  // >>> devices
+  //
+  console.log('adding devices...');
+
+  const { lastID: piDeviceID } = await db.device.add(piTypeID, "mind_of_iZac");
+
+  const { lastID: cokeDeviceID  } = await db.device.add(periPumpTypeID, "coke");
+  const { lastID: tonicDeviceID  } = await db.device.add(periPumpTypeID, "tonic");
+  const { lastID: gingerAleDeviceID  } = await db.device.add(periPumpTypeID, "ginger_ale");
+
+  const { lastID: rumDeviceID } = await db.device.add(airPumpTypeID, 'rum');
+  const { lastID: ginDeviceID } = await db.device.add(airPumpTypeID, 'gin');
+  const { lastID: tequilaDeviceID } = await db.device.add(airPumpTypeID, 'tequila');
+  const { lastID: whiskyDeviceID } = await db.device.add(airPumpTypeID, 'whisky');
+  const { lastID: scotchDeviceID } = await db.device.add(airPumpTypeID, 'scotch');
+  const { lastID: lemonLimeDeviceID } = await db.device.add(airPumpTypeID, 'lemon-lime');
+
+  //
+  // >>> pinouts
+  //
+  console.log('adding pinouts...');
+
+  await db.pin.add(piDeviceID, 8, gingerAleDeviceID, actionPumpReverseID);
+  await db.pin.add(piDeviceID, 10, gingerAleDeviceID, actionPumpForwardID);
+
+  await db.pin.add(piDeviceID, 13, cokeDeviceID, actionPumpReverseID);
+  await db.pin.add(piDeviceID, 18, cokeDeviceID, actionPumpForwardID);
+
+  await db.pin.add(piDeviceID, 19, tonicDeviceID, actionPumpReverseID);
+  await db.pin.add(piDeviceID, 21, tonicDeviceID, actionPumpForwardID);
+
+  await db.pin.add(piDeviceID, 23, rumDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 24, ginDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 26, tequilaDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 29, whiskyDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 31, scotchDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 32, lemonLimeDeviceID, actionPumpForwardID);
+
+  //
+  // >>>> bottles
+  //
+  console.log('adding bottles...');
+
+  const { lastID: rumBottleID } = await db.bottle.add(
+    "rum", 1.75, rumDeviceID);
+  const { lastID: ginBottleID } = await db.bottle.add(
+    "gin", 1.75, ginDeviceID);
+  const { lastID: scotchBottleID } = await db.bottle.add(
+    "scotch", 1.75, scotchDeviceID);
+  const { lastID: whiskyBottleID } = await db.bottle.add(
+    "irish whisky", 1.75, whiskyDeviceID);
+  const { lastID: tequilaBottleID } = await db.bottle.add(
+    "tequila", 1.75, tequilaDeviceID);
+  const { lastID: lemonLimeBottleID } = await db.bottle.add(
+    "lemon lime", 2, 'air', lemonLimeDeviceID);
+  const { lastID: cokeBottleID } = await db.bottle.add(
+    "coke", 2, cokeDeviceID);
+  const { lastID: gingerAleBottleID } = await db.bottle.add(
+    "ginger ale", 2, gingerAleDeviceID);
+  const { lastID: tonicBottleID } = await db.bottle.add(
+    "tonic", 2, tonicDeviceID);
+
+  //
+  // >>>> drinks
+  //
+
+  console.log('adding drinks...');
+
   await db.drink.add("Rum (neat)", [
-    { bottle_id: "1",  liters: shot_in_liters }
+    { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS }
   ]);
 
   await db.drink.add("Rum Lemon-Lime", [
-    { bottle_id: "1",  liters: shot_in_liters },
-    { bottle_id: "12", liters: one_shot_chaser } //  - 0.044 =
+    { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: lemonLimeBottleID, liters: ONE_SHOT_CHASER }
   ]);
 
   await db.drink.add("Rum & Coke", [
-    { bottle_id: "1",  liters: shot_in_liters },
-    { bottle_id: "12", liters: one_shot_chaser }
+    { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: lemonLimeBottleID, liters: ONE_SHOT_CHASER }
   ]);
 
-  // >>>> drinks (Gin id=2)
   await db.drink.add("Gin (neat)", [
-    { bottle_id: "2",  liters: shot_in_liters }
+    { bottle_id: ginBottleID,  liters: SHOT_IN_LITERS }
   ]);
 
   await db.drink.add("Gin & Ginger Ale", [
-    { bottle_id: "2",  liters: shot_in_liters },
-    { bottle_id: "9",  liters: one_shot_chaser }
+    { bottle_id: ginBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: gingerAleBottleID,  liters: ONE_SHOT_CHASER }
   ]);
 
-  // >>>> drinks (VODKA id=3)
-  await db.drink.add("Vodka (neat)", [
-    { bottle_id: "3",  liters: shot_in_liters }
-  ]);
-
-  await db.drink.add("Vodka Tonic", [
-    { bottle_id: "3", liters: shot_in_liters },
-    { bottle_id: "10", liters: one_shot_chaser }
-  ]);
-
-  await db.drink.add("Vodka Cranberry", [
-    { bottle_id: "3", liters: shot_in_liters },
-    { bottle_id: "11", liters: one_shot_chaser }
-  ]);
-
-  // >>> drinks (SCOTCH id=4)
   await db.drink.add("Scotch (neat)", [
-    { bottle_id: "4",  liters: shot_in_liters }
+    { bottle_id: scotchBottleID,  liters: SHOT_IN_LITERS }
   ]);
 
-  // >>> drinks (Irish_Whisky id=5)
   await db.drink.add("Irish Whisky (neat)", [
-    { bottle_id: "5",  liters: shot_in_liters }
+    { bottle_id: whiskyBottleID,  liters: SHOT_IN_LITERS }
   ]);
 
-  // >>> drinks ("tequila" id=6)
   await db.drink.add("Tequila (neat)", [
-    { bottle_id: "6",  liters: shot_in_liters }
-  ]);
-
-  // >>> drinks ("burbon" id=7)
-  await db.drink.add("Burbon (neat)", [
-    { bottle_id: "7",  liters: shot_in_liters }
+    { bottle_id: tequilaBottleID,  liters: SHOT_IN_LITERS }
   ]);
 
   res.status(204).end();
