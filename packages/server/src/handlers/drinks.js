@@ -350,8 +350,11 @@ exports.pour = (db) => async (req, res) => {
             console.log('peri:::done w/ forward!');
             // suck it all back with a 100ms buffer
 
-            console.log(`peri:::firing reverse pin ${forwardPin}`);
-            return robots.on_then_off(reversePin, (pour_duration_ms + 100)).then(() => {
+            return new Promise((resolve) => setTimeout(resolve, 500));
+
+          }).then(() => {
+            console.log(`peri:::firing reverse pin ${reversePin}`);
+            return robots.on_then_off(reversePin, (pour_duration_ms)).then(() => {
               console.log('peri:::done w/ reverse!');
             });
           });
