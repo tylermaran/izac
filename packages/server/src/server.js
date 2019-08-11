@@ -1,15 +1,25 @@
+const fs = require('fs');
+const path = require('path');
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 const cors = require('cors');
+<<<<<<< Updated upstream
 const handlers = require('./handlers');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 const pins = require('./pins');
+=======
+
+const Database = require('./db');
+const { configureRoutes } = require('./routes');
+>>>>>>> Stashed changes
 
 module.exports = class Server {
+
   constructor(options) {
-    this.server;
+    this.server; // initialized in method `start()`
+
     this.port = options.port;
 
     console.log('options.sqlite3.filename', options.sqlite3.filename);
@@ -31,14 +41,29 @@ module.exports = class Server {
   }
 
   async start() {
+<<<<<<< Updated upstream
     await initDatabase(this.sqlite3_db);
     return new Promise(r => this.servqer = this.app.listen(this.port, r));
+=======
+    // @TODO: will this ever reject?
+    return new Promise((resolve, reject) => {
+      this.server = this.app.listen(this.port, function(error) {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve();
+      });
+    });
+>>>>>>> Stashed changes
   }
 
   async stop() {
+    // @TODO: will this ever reject?
     return new Promise(r => this.server.close(r));
   }
 }
+<<<<<<< Updated upstream
 
 async function initDatabase(sqlite3_db) {
   await handlers.bottles.initDatabase(sqlite3_db);
@@ -182,3 +207,5 @@ function configureRoutes(app, clientDir, sqlite3_db) {
     app.get('*', (_, res) => res.sendFile(path.join(clientDir, 'index.html')));
   }
 }
+=======
+>>>>>>> Stashed changes
