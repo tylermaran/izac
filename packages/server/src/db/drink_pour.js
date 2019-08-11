@@ -9,6 +9,11 @@ exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
      return error ? reject(error) : resolve(this);
    }));
 
+exports.drop = (sqlite3_db) => new Promise((resolve, reject) =>
+  sqlite3_db.run(`DROP TABLE IF EXISTS drink_pour;`, [], function(error) {
+    return error ? reject(error) : resolve(this);
+  }));
+
 exports.getPoursForDrink = (sqlite3_db, drink_id) => new Promise((resolve, reject) =>
   sqlite3_db.all('SELECT * FROM drink_pour WHERE drink_id=?', [
     drink_id

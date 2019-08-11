@@ -10,6 +10,11 @@ exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
      return error ? reject(error) : resolve(this);
    }));
 
+exports.drop = (sqlite3_db) => new Promise((resolve, reject) =>
+  sqlite3_db.run(`DROP TABLE IF EXISTS bottle;`, [], function(error) {
+    return error ? reject(error) : resolve(this);
+  }));
+
 exports.getAll = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.all('SELECT * FROM bottle', [], function(error, rows) {
     return error ? reject(error) : resolve(rows)

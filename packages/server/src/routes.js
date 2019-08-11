@@ -16,6 +16,7 @@ exports.configureRoutes = function configureRoutes(app, clientDir, db) {
 
   app.post('/admin/pins/:pin/fire', handlers.admin.pins.fire);
   app.post('/admin/database/init', handlers.admin.database.init(db));
+  app.post('/admin/database/drop', handlers.admin.database.drop(db));
 
   // We only concern ourselves with client routes when we're
   // serving up a generated bundle in production.
