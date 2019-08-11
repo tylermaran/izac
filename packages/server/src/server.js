@@ -1,16 +1,30 @@
+const fs = require('fs');
+const path = require('path');
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 const cors = require('cors');
+<<<<<<< Updated upstream
 const handlers = require('./handlers');
 
 const fs = require('fs');
+<<<<<<< HEAD
 
 const Database = require('./db');
+=======
+const pins = require('./pins');
+=======
+
+const Database = require('./db');
+const { configureRoutes } = require('./routes');
+>>>>>>> Stashed changes
+>>>>>>> ae8b249... lol commit to master --- thx for code review fredi
 
 module.exports = class Server {
+
   constructor(options) {
-    this.server;
+    this.server; // initialized in method `start()`
+
     this.port = options.port;
     this.db = new Database(options.sqlite3.filename);
     this.app = express();
@@ -23,13 +37,33 @@ module.exports = class Server {
   }
 
   async start() {
+<<<<<<< HEAD
     return new Promise(r => this.server = this.app.listen(this.port, r));
+=======
+<<<<<<< Updated upstream
+    await initDatabase(this.sqlite3_db);
+    return new Promise(r => this.servqer = this.app.listen(this.port, r));
+=======
+    // @TODO: will this ever reject?
+    return new Promise((resolve, reject) => {
+      this.server = this.app.listen(this.port, function(error) {
+        if (error) {
+          return reject(error);
+        }
+
+        resolve();
+      });
+    });
+>>>>>>> Stashed changes
+>>>>>>> ae8b249... lol commit to master --- thx for code review fredi
   }
 
   async stop() {
+    // @TODO: will this ever reject?
     return new Promise(r => this.server.close(r));
   }
 }
+<<<<<<< Updated upstream
 
 function configureRoutes(app, clientDir, db) {
   // Server routes (take priority over client routing).
@@ -65,3 +99,5 @@ function configureRoutes(app, clientDir, db) {
     app.get('*', (_, res) => res.sendFile(path.join(clientDir, 'index.html')));
   }
 }
+=======
+>>>>>>> Stashed changes
