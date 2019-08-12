@@ -1,7 +1,17 @@
-Server API
+Izac's Bar-Back(end)
 ================================================================================
 
-This is bar bot's server API.
+The backend component to Izac's Bar. It serves a RESTful API that fires the
+necessary pins when drink orders arrive.
+
+
+Testing
+--------------------------------------------------------------------------------
+
+### Integration
+
+ * Dependencies: `curl`, [`jq`][jq]
+ * Run: `./test/integration.sh`
 
 
 High-Level Routes

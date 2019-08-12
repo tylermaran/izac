@@ -1,6 +1,6 @@
 {
-  "name": "server",
-  "version": "1.0.0",
+  "name": "barbot-web-server",
+  "version": "0.0.0",
   "description": "backend for barbot",
   "scripts": {
     "start": "nodemon bin/main.js",
@@ -11,7 +11,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "rpio": "^1.0.13",
-    "sqlite3": "^4.0.9"
+    "sqlite3": "^4.0.9",
+    "barbot-api": "0.0.0"
   },
   "keywords": [],
   "authors": [
