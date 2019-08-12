@@ -23,7 +23,7 @@ exports.get = (db) => async (req, res) => {
       return;
     }
 
-    const pours = await db.drink_pours.getPoursForDrink(drink.id);
+    const pours = await db.drink_pour.getPoursForDrink(drink.id);
     if (!pours) {
       res.status(404).json({ error: `pours for drink ${drink.id} not found` });
       return;
