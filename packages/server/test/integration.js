@@ -39,7 +39,9 @@ const BASE = `http://localhost:${serverConfig.port}`;
 
 // ---
 
-tap.test('start test server', async () => {
+tap.runOnly = false;
+
+tap.only('start test server', async () => {
   fs.unlinkSync(serverConfig.sqlite3.filename);
 
   server = new Server(serverConfig);
@@ -48,7 +50,6 @@ tap.test('start test server', async () => {
 });
 
 tap.beforeEach(async () => {
-  console.log('droppin');
   await new Promise(r => request({
     method: 'POST',
     uri: `${BASE}/admin/database/drop`
@@ -56,16 +57,12 @@ tap.beforeEach(async () => {
     r();
   }));
 
-  console.log('done dropping!')
-
   await new Promise(r => request({
     method: 'POST',
     uri: `${BASE}/admin/database/init`
   }, (err, res, body) => {
     r();
   }));
-
-  console.log('done init!')
 });
 
 tap.teardown(() => {
@@ -111,4 +108,28 @@ tap.test('GET /bottles/:id', t => {
 
     t.end();
   });
+});
+
+tap.test('POST /bottles', async (t) => {
+  await new Promise((resolve, reject) => request({
+    method: 'POST',
+    uri: `${BASE}/bottles`,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: 'jayskie',
+      max_liters: 2,
+      attached_device_id: 1 // hard-coded because we know it's there
+    })
+  }, (error, response, body) => {
+    const data = JSON.parse(body);
+
+    t.match(Object.keys(data).length, 5);
+    t.match(typeof data.id, 'number');
+    t.match(typeof data.name, 'string');
+    t.match(typeof data.max_liters, 'number');
+    t.match(typeof data.current_liters, 'number');
+    t.match(data.attached_device_id, 1); // not currently attached to a device
+
+    resolve();
+  }));
 });
