@@ -42,7 +42,7 @@ exports.getAll = (db) => async (req, res) => {
 
 exports.add = (db) => async (req, res) => {
   const invalidations = [];
-  const { name, max_liters } = req.body;
+  const { name, max_liters, attached_device_id } = req.body;
 
   if (typeof name !== 'string') {
     invalidations.push("name isn't of type string");
@@ -52,15 +52,17 @@ exports.add = (db) => async (req, res) => {
     invalidations.push('max_liters is not a number');
   }
 
+  if (typeof attached_device_id !== 'number') {
+    invalidations.push('attached_device_id is not a number');
+  }
+
   if (invalidations.length > 0) {
     res.status(400).json({ errors: invalidations });
     return;
   }
 
   try {
-    // TODO: this is broken with the new add syntax. Fix me when we have
-    // a UI that can add new drinks.
-    const statement = await db.bottle.add(name, max_liters);
+    const statement = await db.bottle.add(name, max_liters, attached_device_id);
     const bottle = await db.bottle.getById(statement.lastID);
     res.status(200).json(bottle);
   } catch (error) {

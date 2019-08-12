@@ -10,6 +10,11 @@ exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
      return error ? reject(error) : resolve(this);
    }));
 
+exports.drop = (sqlite3_db) => new Promise((resolve, reject) =>
+  sqlite3_db.run(`DROP TABLE IF EXISTS device;`, [], function(error) {
+    return error ? reject(error) : resolve(this);
+  }));
+
 exports.add = (sqlite3_db, device_type_id, name) => new Promise((resolve, reject) => {
   const sql = `INSERT INTO device (device_type_id, name) VALUES (?, ?);`;
   const params = [ device_type_id, name ];

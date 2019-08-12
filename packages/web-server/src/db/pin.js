@@ -17,6 +17,11 @@ exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
      return error ? reject(error) : resolve(this);
    }));
 
+exports.drop = (sqlite3_db) => new Promise((resolve, reject) =>
+  sqlite3_db.run(`DROP TABLE IF EXISTS pin;`, [], function(error) {
+     return error ? reject(error) : resolve(this);
+   }));
+
 exports.add = (sqlite3_db, device_id, physical_pin_number, attached_device_id, device_action_id) => new Promise((resolve, reject) => {
 
   const sql = `INSERT INTO pin (

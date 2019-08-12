@@ -28,21 +28,31 @@ exports.pins.fire = (req, res) => {
 
 exports.database = {};
 
+exports.database.drop = (db) => async(req, res) => {
+  await db.bottle.drop();
+  await db.device.drop();
+  await db.device_action.drop();
+  await db.device_type.drop();
+  await db.drink.drop();
+  await db.drink_pour.drop();
+  await db.pin.drop();
+
+  return res.status(204).end();
+};
+
 exports.database.init = (db) => async (req, res) => {
 
-  await db.device_type.create();
-  await db.device_action.create();
-  await db.device.create();
-  await db.pin.create();
   await db.bottle.create();
+  await db.device.create();
+  await db.device_action.create();
+  await db.device_type.create();
   await db.drink.create();
   await db.drink_pour.create();
+  await db.pin.create();
 
   //
   // >>>> device types
   //
-  console.log('adding device types...');
-
   const { lastID: piTypeID } = await db.device_type.add('raspberry_pi_3_b+');
   const { lastID: periPumpTypeID } = await db.device_type.add('peristaltic_pump');
   const { lastID: airPumpTypeID } = await db.device_type.add('air_pump');
@@ -51,8 +61,6 @@ exports.database.init = (db) => async (req, res) => {
   //
   // >>>> device actions
   //
-  console.log('adding device actions...');
-
   const { lastID: actionPumpForwardID } = await db.device_action.add('pump_forward');
   const { lastID: actionPumpReverseID } = await db.device_action.add('pump_reverse');
   const { lastID: actionDispenseID } = await db.device_action.add('dispense');
@@ -60,8 +68,6 @@ exports.database.init = (db) => async (req, res) => {
   //
   // >>> devices
   //
-  console.log('adding devices...');
-
   const { lastID: piDeviceID } = await db.device.add(piTypeID, "mind_of_iZac");
 
   const { lastID: cokeDeviceID  } = await db.device.add(periPumpTypeID, "coke");
@@ -78,8 +84,6 @@ exports.database.init = (db) => async (req, res) => {
   //
   // >>> pinouts
   //
-  console.log('adding pinouts...');
-
   await db.pin.add(piDeviceID, 8, gingerAleDeviceID, actionPumpReverseID);
   await db.pin.add(piDeviceID, 10, gingerAleDeviceID, actionPumpForwardID);
 
@@ -99,8 +103,6 @@ exports.database.init = (db) => async (req, res) => {
   //
   // >>>> bottles
   //
-  console.log('adding bottles...');
-
   const { lastID: rumBottleID } = await db.bottle.add(
     "rum", 1.75, rumDeviceID);
   const { lastID: ginBottleID } = await db.bottle.add(
@@ -123,9 +125,6 @@ exports.database.init = (db) => async (req, res) => {
   //
   // >>>> drinks
   //
-
-  console.log('adding drinks...');
-
   await db.drink.add("Rum (neat)", [
     { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS }
   ]);
@@ -160,8 +159,6 @@ exports.database.init = (db) => async (req, res) => {
   await db.drink.add("Tequila (neat)", [
     { bottle_id: tequilaBottleID,  liters: SHOT_IN_LITERS }
   ]);
-
-  console.log('done!');
 
   res.status(204).end();
 };
