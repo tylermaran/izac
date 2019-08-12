@@ -43,8 +43,6 @@ const api = new API(baseURL);
 
 // ---
 
-tap.runOnly = false;
-
 tap.only('start test server', async () => {
   fs.unlinkSync(serverConfig.sqlite3.filename);
 
@@ -106,5 +104,19 @@ tap.test('POST /bottles', async (t) => {
   t.match(typeof data.name, 'string');
   t.match(typeof data.max_liters, 'number');
   t.match(typeof data.current_liters, 'number');
-  t.match(data.attached_device_id, 1); // not currently attached to a device
+  t.match(data.attached_device_id, 1);
+});
+
+tap.test('POST /bottles/:id/refill', async (t) => {
+  const bottle = await api.bottle.add('jayskie', 2, 1);
+  const data = await api.bottle.refill(bottle.id);
+
+  t.match(Object.keys(data).length, 5);
+  t.match(typeof data.id, 'number');
+  t.match(typeof data.name, 'string');
+  t.match(typeof data.max_liters, 'number');
+  t.match(typeof data.current_liters, 'number');
+  t.match(data.attached_device_id, 1);
+
+  // t.todo('check that the bottle properly refills after pouring a drink');
 });

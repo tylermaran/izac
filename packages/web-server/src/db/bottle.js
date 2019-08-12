@@ -51,7 +51,7 @@ exports.add = (sqlite3_db, name, max_liters, attached_device_id) => new Promise(
 });
 
 exports.refill = async (sqlite3_db, id) => {
-  const bottle = await getById(sqlite3_db, id);
+  const bottle = await exports.getById(sqlite3_db, id);
 
   return new Promise((resolve, reject) =>
     sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [

@@ -86,8 +86,9 @@ exports.refill = (db) => async (req, res) => {
   }
 
   try {
+    await db.bottle.refill(id);
     const bottle = await db.bottle.getById(id);
-    res.json(bottle);
+    res.status(200).json(bottle);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
     res.status(500).json({ id, error: "internal server error" });

@@ -17,3 +17,11 @@ exports.add = async function(baseURL, name, max_liters, attached_device_id) {
 
   return response.json();
 };
+
+exports.refill = async function(baseURL, id) {
+  const response = await fetch(`${baseURL}/bottles/${id}/refill`, {
+    method: 'POST'
+  });
+
+  return response.json();
+};

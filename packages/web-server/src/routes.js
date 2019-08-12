@@ -5,7 +5,7 @@ exports.configureRoutes = function configureRoutes(app, clientDir, db) {
   app.get('/bottles', handlers.bottles.getAll(db));
   app.post('/bottles', handlers.bottles.add(db));
   app.get('/bottles/:id', handlers.bottles.get(db));
-  app.post('/bottles/:id/refill', handlers.bottles.refill);
+  app.post('/bottles/:id/refill', handlers.bottles.refill(db));
 
   app.get('/drinks', handlers.drinks.getAll(db));
   app.get('/drinks/:id', handlers.drinks.get(db));
