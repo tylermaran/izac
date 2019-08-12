@@ -2,8 +2,6 @@ const handlers = require('./handlers');
 
 exports.configureRoutes = function configureRoutes(app, clientDir, db) {
   // Server routes (take priority over client routing).
-  app.post('/order/:drink?', handlers.order.drink);
-
   app.get('/bottles', handlers.bottles.getAll(db));
   app.post('/bottles', handlers.bottles.add(db));
   app.get('/bottles/:id', handlers.bottles.get(db));
