@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "backend for barbot",
   "scripts": {
-    "start": "nodemon bin/main.js"
+    "start": "nodemon bin/main.js",
+    "test": "tap"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -18,6 +19,8 @@
     "Tyler Maran <tyler.maran@gmail.com>"
   ],
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "request": "^2.88.0",
+    "tap": "^14.6.1"
   }
 }

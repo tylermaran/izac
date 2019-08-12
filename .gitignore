@@ -24,3 +24,4 @@ yarn-error.log*
 
 # our database stuff --- need to keep this out of the source :)
 db.sqlite3
+test.db.sqlite3
