@@ -4,7 +4,7 @@ require('isomorphic-fetch');
 module.exports = class API {
 
   constructor(baseURL) {
-    [ 'bottle' ].forEach(module_name => {
+    [ 'bottle', 'drink' ].forEach(module_name => {
       const mod = require(`./${module_name}`);
 
       Object.keys(mod).forEach((key) => {
