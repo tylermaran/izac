@@ -6,7 +6,7 @@
   "scripts": {
     "start": "lerna run --parallel start",
     "build": "./bin/build.sh ./build",
-    "prod": "NODE_ENV=production node build/server/bin/main.js"
+    "prod": "cd build/web-server; ls -alh node_modules | grep express; NODE_ENV=production REACT_BUILD_DIR=../react-ui node ./bin/main.js"
   },
   "repository": {
     "type": "git",

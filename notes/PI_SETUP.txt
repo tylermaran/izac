@@ -32,11 +32,13 @@ on local computer:
 
 ```
 $ ping izac.noise
-$ ssh -i ssh -i ~/.ssh/id_rsa pi@izac.noise
+$ TERM=xterm ssh -i ssh -i ~/.ssh/id_rsa pi@izac.noise
 ```
 
 in the SSH session (once we're in the PI):
 
 ```
 $ passwd  # e.g. set to: "barbotisthebest"
+$ sudo apt-get install -y tmux # we run all our stuff in a tmux session lol @TODO
+$ sudo apt-get install -y matchbox-keyboard # our on-screen keyboard for input
 ```

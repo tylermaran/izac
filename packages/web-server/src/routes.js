@@ -1,3 +1,4 @@
+const express = require('express')
 const handlers = require('./handlers');
 
 exports.configureRoutes = function configureRoutes(app, clientDir, db) {

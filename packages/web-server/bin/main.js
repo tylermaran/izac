@@ -12,14 +12,10 @@ const config = {
     allowedHeaders: ['Content-Type']
   },
   client: {
-    // @TODO: sort-of hard coded at the moment and relies on the
-    //        structure of the build directory. would be better to
-    //        pass this in as an environment variable.
-    //
-    //        Keeping it as-is because it's gettin' late, but also
-    //        this code is only used in production builds and not
-    //        during the server development. but it's ugly af.
-    baseDir: path.join(__dirname, '..', '..', 'client')
+      baseDir: process.env.REACT_BUILD_DIR || (() => {
+          console.error('you must set REACT_BUILD_DIR');
+          process.exit(1);
+      })()
   },
   sqlite3: {
     filename: path.join(cwd, 'db.sqlite3')

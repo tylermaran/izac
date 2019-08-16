@@ -1,0 +1,14 @@
+
+
+```
+$ rsync -Pav --exclude 'node_modules' -e "ssh -i $HOME/.ssh/id_rsa" ./izac pi@izac.noise:~
+$ npm install
+$ npx lerna bootstrap
+```
+
+fix ARM bugs with sqlite:
+
+```
+cd packages/web-server
+npm install sqlite3 --build-from-source
+```

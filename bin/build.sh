@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env dash
 
-# why sh vs bash? because we aren't fancy that's why.
+# why dash vs bash? because we aren't fancy that's why.
 # true shell scripting---
 # no bashisms here.
 
@@ -17,7 +17,7 @@ if [ -z "${BUILD_DIR}" ]; then
     exit 1
 fi
 
-function cleanup() {
+cleanup() {
     # clean up any previous builds if they exist
     [ -d $BUILD_DIR ] && {
         echo "cleaning up previous build directory"
@@ -25,39 +25,58 @@ function cleanup() {
     }
 }
 
-function build_client() {
+build_react_ui() {
     # using "(" and ")" creates a subshell where you can do things
     # like `cd` and when you exit the subshell, the cwd is reset to
     # what it was previously among other things!
     (
-        cd "${SCRIPT_PATH}/../packages/client"
-        npm install
+        cd "${SCRIPT_PATH}/../packages/react-ui"
         npm run build || {
             cleanup
-            echo "client build failed lol" >&2
+            echo "react-ui build failed lol" >&2
             exit 1
         }
     )
 }
 
-function build_server() {
+build_web_server() {
     (
-        cd "${SCRIPT_PATH}/../packages/server"
-        npm install
+        cd "${SCRIPT_PATH}/../packages/web-server"
     )
 }
 
-function build() {
+build_barbot_api() {
+    (
+        cd "${SCRIPT_PATH}/../packages/barbot-api"
+    )
+}
+
+build() {
     mkdir $BUILD_DIR # create the top-level build directory
 
-    # build the client code & transfer build to our top-level build dir
-    build_client || exit 1
-    mkdir "${BUILD_DIR}/client"
-    mv "${SCRIPT_PATH}/../packages/client/build"/* "${BUILD_DIR}/client"
+    (
+        cd "${SCRIPT_PATH}/.."
+        npx lerna bootstrap
+    )
 
-    # copy the server code (incl. node_modules) to $BUILD_DIR/server
-    build_server
-    cp -r "${SCRIPT_PATH}/../packages/server" $BUILD_DIR
+    echo "building react-ui..."
+
+    # build the client code & transfer build to our top-level build dir
+    build_react_ui || exit 1
+    mkdir "${BUILD_DIR}/react-ui"
+    mv "${SCRIPT_PATH}/../packages/react-ui/build"/* "${BUILD_DIR}/react-ui"
+
+    echo "building web-server..."
+
+    # copy the web-server code (incl. node_modules) to $BUILD_DIR/web-server
+    build_web_server
+    cp -r "${SCRIPT_PATH}/../packages/web-server" $BUILD_DIR
+
+    echo "building barbot-api..."
+
+    # copy the barbot-api code (incl. node_modules) to $BUILD_DIR/barbot-api
+    build_barbot_api
+    cp -r "${SCRIPT_PATH}/../packages/barbot-api" $BUILD_DIR
 }
 
 
