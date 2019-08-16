@@ -6,6 +6,7 @@ import {BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Order from './pages/Order';
 import Landing from './pages/Landing';
 import Settings from './pages/Settings';
+import Testing from './pages/Testing';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route exact path='/' component = {Landing} />
           <Route exact path='/order' component = {Order} />
           <Route exact path='/settings' component = {Settings} />
+          <Route exact path='/testing' component = {Testing} />
           <Route component = {Landing} />
         </Switch>
       </Router>

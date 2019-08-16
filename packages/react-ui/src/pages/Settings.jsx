@@ -24,9 +24,6 @@ const Settings = (props) => {
         });
     }, []);
 
-    console.log('Bottles', bottles);
-    
-
     return (
         <div>
             <Header/>
@@ -40,7 +37,7 @@ const Settings = (props) => {
                 Lock machine */}
             <div className="bottle_list">
                 {bottles.map((bottles) => (
-                    <Bottle name={bottles.name} id={bottles.id} max_liters={bottles.max_liters} current_liters={bottles.current_liters}/>
+                    <Bottle name={bottles.name} id={bottles.id} max_liters={bottles.max_liters} current_liters={bottles.current_liters} key={bottles.id}/>
                 ))}
             </div>
 
