@@ -6,12 +6,10 @@
 import React, { useState, useEffect } from 'react';
 import API from 'barbot-api';
 
-
 // Importing Components
 import Drink from '../components/Drink';
 import Header from '../components/Header';
 import Confirm from '../components/Confirm';
-
 
 // Importing styling
 import './Order.css'
