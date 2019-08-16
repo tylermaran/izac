@@ -1,0 +1,42 @@
+ok. put SD card into your computer................
+
+```
+$ sudo dd bs=4M if=2019-07-10-raspbian-buster-full.img of=/dev/mmcblk0 # Put raspbian on SD Card
+$ pmount /dev/mmcblk0p2 # mount the main partition
+$ ls /media/mmcblk0p2/  # what's in it
+bin   dev  home  lost+found  mnt  proc  run   srv  tmp  var
+boot  etc  lib   media       opt  root  sbin  sys  usr
+$ sudo mkdir /media/mmcblk0p2/home/pi/.ssh # make ssh directory
+$ cat ~/.ssh/id_rsa.pub | sudo tee /media/mmcblk0p2/home/pi/.ssh/authorized_keys # copy our key into authorized_keys
+$ sudo sed -i 's/raspberrypi/izac/g' /media/mmcblk0p2/etc/hosts # update hostsname in `/etc/hosts`
+# sudo sed -i 's/raspberrypi/izac/g' /media/mmcblk0p2/etc/hostname # update hostname in `/etc/hostname`
+$ pmount /dev/mmcblk0p1 # mount the boot partition
+$ touch /media/mmcblk0p1/ssh # create an empty `ssh` directory
+$ tee /media/mmcblk0p1/wpa_supplicant.conf <<EOF
+> country=us
+> update_config=1
+> ctrl_interface=/var/run/wpa_supplicant
+>
+> network={
+> ssid="Noisebridge"
+> key_mgmt=NONE
+> }
+> EOF
+$ pumount /media/mmcblk0p1/
+$ pumount /media/mmcblk0p2/
+```
+
+put SD card into the PI.
+
+on local computer:
+
+```
+$ ping izac.noise
+$ ssh -i ssh -i ~/.ssh/id_rsa pi@izac.noise
+```
+
+in the SSH session (once we're in the PI):
+
+```
+$ passwd  # e.g. set to: "barbotisthebest"
+```
