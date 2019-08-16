@@ -1,13 +1,23 @@
 // Importing Dependencies
 import React from 'react';
+import {BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Importing Components
 import Order from './pages/Order';
+import Landing from './pages/Landing';
+import Settings from './pages/Settings';
 
 function App() {
   return (
     <div className="App">
-      <Order/>
+      <Router>
+        <Switch>
+          <Route exact path='/' component = {Landing} />
+          <Route exact path='/order' component = {Order} />
+          <Route exact path='/settings' component = {Settings} />
+          <Route component = {Landing} />
+        </Switch>
+      </Router>
     </div>
   );
 }

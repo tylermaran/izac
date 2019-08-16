@@ -1,0 +1,68 @@
+.confirm {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.backdrop {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(92, 92, 92, 0.794);
+    padding: 25% 0 0 0;
+}
+
+.popup {
+    height: 380px;
+    width: 400px;
+    margin: 0 auto;
+    background-image: url('../images/background.jpg');
+    background-position: center;
+    /* background-size: cover; */
+    color: black;
+    border-top-right-radius: 80px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 80px;
+    border-bottom-right-radius: 30px;
+    padding-top: 20px;
+    border: 2px solid black;
+
+    -webkit-box-shadow: 10px 13px 18px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 13px 18px 0px rgba(0,0,0,0.75);
+    box-shadow: 10px 13px 18px 0px rgba(0,0,0,0.75);
+}
+
+.confirm_title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 25px;
+    font-weight: bold;
+    background-color: rgb(255, 226, 188);
+    width: 250px;
+    margin: 0 auto;
+    border-radius: 50px;
+    border: 4px solid black;
+}
+
+.confirm_image {
+    height: 200px;
+    width: 200px;
+    margin: 30px auto;
+    background-image: url('../images/placeholder_drink.jpg');
+    border-radius: 100px;
+    background-position: 10% 50%;
+    background-size: cover;
+    border: 1px solid black;
+}
+
+.pour_drink {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 40px;
+    font-weight: bold;
+    background-color: rgb(255, 226, 188);
+    width: 150px;
+    margin: 0 auto;
+    border-radius: 50px;
+    border: 4px solid black;
+}
