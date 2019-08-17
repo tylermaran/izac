@@ -68,84 +68,105 @@ exports.database.init = (db) => async (req, res) => {
   //
   // >>> devices
   //
+
+  // raspberry pi (1 total)
   const { lastID: piDeviceID } = await db.device.add(piTypeID, "mind_of_iZac");
 
+  // peristaltic pumps (4 total)
   const { lastID: cokeDeviceID  } = await db.device.add(periPumpTypeID, "coke");
   const { lastID: tonicDeviceID  } = await db.device.add(periPumpTypeID, "tonic");
-  const { lastID: gingerAleDeviceID  } = await db.device.add(periPumpTypeID, "ginger_ale");
+  const { lastID: gingerAleDeviceID  } = await db.device.add(periPumpTypeID, "ginger-ale");
+  const { lastID: e_UndefinedDeviceID } = await db.device.add(periPumpTypeID, "e_unassigned");
 
-  const { lastID: rumDeviceID } = await db.device.add(airPumpTypeID, 'rum');
-  const { lastID: ginDeviceID } = await db.device.add(airPumpTypeID, 'gin');
+  // air pumps (14)
+  const { lastID: spicedRumDeviceID } = await db.device.add(airPumpTypeID, 'spiced-rum');
   const { lastID: tequilaDeviceID } = await db.device.add(airPumpTypeID, 'tequila');
-  const { lastID: whiskyDeviceID } = await db.device.add(airPumpTypeID, 'whisky');
-  const { lastID: scotchDeviceID } = await db.device.add(airPumpTypeID, 'scotch');
+  const { lastID: ginDeviceID } = await db.device.add(airPumpTypeID, 'gin');
+  const { lastID: bourbonDeviceID } = await db.device.add(airPumpTypeID, 'bourbon');
+  const { lastID: vodkaDeviceID } = await db.device.add(airPumpTypeID, 'vodka');
   const { lastID: lemonLimeDeviceID } = await db.device.add(airPumpTypeID, 'lemon-lime');
+  const { lastID: scotchDeviceID } = await db.device.add(airPumpTypeID, 'scotch');
+  const { lastID: irishWhiskyDeviceID } = await db.device.add(airPumpTypeID, 'irish-whisky');
+  const { lastID: cranberryDeviceID } = await db.device.add(airPumpTypeID, 'cranberry');
+  const { lastID: coffeeLiquorDeviceID } = await db.device.add(airPumpTypeID, 'coffee-liquor');
+  const { lastID: a_UndefinedDeviceID } = await db.device.add(airPumpTypeID, 'a_unassigned');
+  const { lastID: b_UndefinedDeviceID } = await db.device.add(airPumpTypeID, 'b_unassigned');
+  const { lastID: c_UndefinedDeviceID } = await db.device.add(airPumpTypeID, 'c_unassigned');
+  const { lastID: d_UndefinedDeviceID } = await db.device.add(airPumpTypeID, 'd_unassigned');
 
   //
   // >>> pinouts
   //
-  await db.pin.add(piDeviceID, 8, gingerAleDeviceID, actionPumpReverseID);
-  await db.pin.add(piDeviceID, 10, gingerAleDeviceID, actionPumpForwardID);
-
-  await db.pin.add(piDeviceID, 13, cokeDeviceID, actionPumpReverseID);
-  await db.pin.add(piDeviceID, 18, cokeDeviceID, actionPumpForwardID);
-
-  await db.pin.add(piDeviceID, 19, tonicDeviceID, actionPumpReverseID);
-  await db.pin.add(piDeviceID, 21, tonicDeviceID, actionPumpForwardID);
-
-  await db.pin.add(piDeviceID, 23, rumDeviceID, actionPumpForwardID);
-  await db.pin.add(piDeviceID, 24, ginDeviceID, actionPumpForwardID);
-  await db.pin.add(piDeviceID, 26, tequilaDeviceID, actionPumpForwardID);
-  await db.pin.add(piDeviceID, 29, whiskyDeviceID, actionPumpForwardID);
-  await db.pin.add(piDeviceID, 31, scotchDeviceID, actionPumpForwardID);
-  await db.pin.add(piDeviceID, 32, lemonLimeDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 40, spicedRumDeviceID, actionPumpForwardID);
+  // 39
+  await db.pin.add(piDeviceID, 38, ginDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 37, bourbonDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 36, vodkaDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 35, lemonLimeDeviceID, actionPumpForwardID);
+  // 34
+  await db.pin.add(piDeviceID, 33, lemonLimeDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 32, irishWhiskyDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 31, cranberryDeviceID, actionPumpForwardID);
+  // 30
+  await db.pin.add(piDeviceID, 29, coffeeLiquorDeviceID, actionPumpForwardID);
+  // 28
+  // 27
+  await db.pin.add(piDeviceID, 26, a_UndefinedDeviceID, actionPumpForwardID);
+  // 25
+  await db.pin.add(piDeviceID, 24, b_UndefinedDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 23, c_UndefinedDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 22, d_UndefinedDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 21, tequilaDeviceID, actionPumpForwardID);
+  // 20
+  await db.pin.add(piDeviceID, 19, cokeDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 18, cokeDeviceID, actionPumpReverseID);
+  // 17
+  await db.pin.add(piDeviceID, 16, gingerAleDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 15, gingerAleDeviceID, actionPumpReverseID);
+  // 14
+  await db.pin.add(piDeviceID, 13, tonicDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 12, tonicDeviceID, actionPumpReverseID);
+  await db.pin.add(piDeviceID, 11, e_UndefinedDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 10, e_UndefinedDeviceID, actionPumpReverseID);
+  // 9
+  // 8
+  // 7
+  // 6
+  // 5
+  // 4
+  // 3
+  // 2
+  // 1
 
   //
   // >>>> bottles
   //
-  const { lastID: rumBottleID } = await db.bottle.add(
-    "rum", 1.75, rumDeviceID);
-  const { lastID: ginBottleID } = await db.bottle.add(
-    "gin", 1.75, ginDeviceID);
-  const { lastID: scotchBottleID } = await db.bottle.add(
-    "scotch", 1.75, scotchDeviceID);
-  const { lastID: whiskyBottleID } = await db.bottle.add(
-    "irish whisky", 1.75, whiskyDeviceID);
-  const { lastID: tequilaBottleID } = await db.bottle.add(
-    "tequila", 1.75, tequilaDeviceID);
-  const { lastID: lemonLimeBottleID } = await db.bottle.add(
-    "lemon lime", 2, lemonLimeDeviceID);
-  const { lastID: cokeBottleID } = await db.bottle.add(
-    "coke", 2, cokeDeviceID);
-  const { lastID: gingerAleBottleID } = await db.bottle.add(
-    "ginger ale", 2, gingerAleDeviceID);
-  const { lastID: tonicBottleID } = await db.bottle.add(
-    "tonic", 2, tonicDeviceID);
+  const { lastID: spicedRumBottleID } = await db.bottle.add("spiced rum", 1.75, spicedRumDeviceID);
+  const { lastID: tequilaBottleID } = await db.bottle.add("tequila", 1.75, tequilaDeviceID);
+  const { lastID: ginBottleID } = await db.bottle.add("gin", 1.75, ginDeviceID);
+  const { lastID: bourbonBottleID } = await db.bottle.add("bourbon", 1.75, bourbonDeviceID);
+  const { lastID: vodkaBottleID } = await db.bottle.add("vodka", 1.75, vodkaDeviceID);
+  const { lastID: lemonLimeBottleID } = await db.bottle.add("lemon lime", 2, lemonLimeDeviceID);
+  const { lastID: scotchBottleID } = await db.bottle.add("scotch", 1.75, scotchDeviceID);
+  const { lastID: irishWhiskyBottleID } = await db.bottle.add("irish whisky", 1.75, irishWhiskyDeviceID);
+  const { lastID: cranberryBottleID } = await db.bottle.add("cranberry", 1.75, cranberryDeviceID);
+  const { lastID: coffeeLiquorBottleID } = await db.bottle.add("coffee liquor", 1.75, coffeeLiquorDeviceID);
+
+  const { lastID: cokeBottleID } = await db.bottle.add("coke", 2, cokeDeviceID);
+  const { lastID: gingerAleBottleID } = await db.bottle.add("ginger ale", 2, gingerAleDeviceID);
+  const { lastID: tonicBottleID } = await db.bottle.add("tonic", 2, tonicDeviceID);
 
   //
   // >>>> drinks
   //
+
+  // Neat drinks
   await db.drink.add("Rum (neat)", [
-    { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS }
-  ]);
-
-  await db.drink.add("Rum Lemon-Lime", [
-    { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS },
-    { bottle_id: lemonLimeBottleID, liters: ONE_SHOT_CHASER }
-  ]);
-
-  await db.drink.add("Rum & Coke", [
-    { bottle_id: rumBottleID,  liters: SHOT_IN_LITERS },
-    { bottle_id: cokeBottleID, liters: ONE_SHOT_CHASER }
+    { bottle_id: spicedRumBottleID,  liters: SHOT_IN_LITERS }
   ]);
 
   await db.drink.add("Gin (neat)", [
     { bottle_id: ginBottleID,  liters: SHOT_IN_LITERS }
-  ]);
-
-  await db.drink.add("Gin & Ginger Ale", [
-    { bottle_id: ginBottleID,  liters: SHOT_IN_LITERS },
-    { bottle_id: gingerAleBottleID,  liters: ONE_SHOT_CHASER }
   ]);
 
   await db.drink.add("Scotch (neat)", [
@@ -153,11 +174,86 @@ exports.database.init = (db) => async (req, res) => {
   ]);
 
   await db.drink.add("Irish Whisky (neat)", [
-    { bottle_id: whiskyBottleID,  liters: SHOT_IN_LITERS }
+    { bottle_id: irishWhiskyBottleID,  liters: SHOT_IN_LITERS }
   ]);
 
   await db.drink.add("Tequila (neat)", [
     { bottle_id: tequilaBottleID,  liters: SHOT_IN_LITERS }
+  ]);
+
+  await db.drink.add("Vodka (neat)", [
+    { bottle_id: vodkaBottleID,  liters: SHOT_IN_LITERS }
+  ]);
+
+  // Standard Mixed Drinks
+  await db.drink.add("Gin & Ginger", [
+    { bottle_id: ginBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: gingerAleBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Tequila Ginger", [
+    { bottle_id: tequilaBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: gingerAleBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Vodka Cranberry", [
+    { bottle_id: vodkaBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: cranberryBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Vodka Lemon-Lime", [
+    { bottle_id: vodkaBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: lemonLimeBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Rum Lemon-Lime", [
+    { bottle_id: spicedRumBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: lemonLimeBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Margarita", [
+    { bottle_id: tequilaBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: lemonLimeBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Rum & Coke", [
+    { bottle_id: spicedRumBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: cokeBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Bourbon & Coke", [
+    { bottle_id: bourbonBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: cokeBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Whisky & Coke", [
+    { bottle_id: irishWhiskyBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: cokeBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Vodka Tonic", [
+    { bottle_id: vodkaBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: tonicBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Gin & Tonic", [
+    { bottle_id: ginBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: tonicBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Vodka Ginger", [
+    { bottle_id: vodkaBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: gingerAleBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Bourbon Ginger", [
+    { bottle_id: bourbonBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: gingerAleBottleID,  liters: ONE_SHOT_CHASER }
+  ]);
+
+  await db.drink.add("Scotch Ginger", [
+    { bottle_id: scotchBottleID,  liters: SHOT_IN_LITERS },
+    { bottle_id: gingerAleBottleID,  liters: ONE_SHOT_CHASER }
   ]);
 
   res.status(204).end();
