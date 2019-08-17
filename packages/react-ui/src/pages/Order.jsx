@@ -23,23 +23,26 @@ const Order  = (props) => {
     //
     // https://reactjs.org/docs/hooks-reference.html#useeffect
     //
-    const [drinks, setDrinks] = useState([]);
+    const [drinkList, setDrinkList] = useState([]);
     const [confirm, setConfirm] = useState(false);
+    // const [drinks]
 
     useEffect(() => {
         api.drink.list().then(data => {
             console.log(data);
             // console.log(JSON.stringify(data, null, 4));
-            setDrinks(data.drinks)
+            setDrinkList(data.drinks)
         });
     }, []);
 
-    let modal =<div/>;
-
-    const handleConfirm = (drink) => {
+    const promptComfirm = (drink) => {
         // show confirm
         setConfirm(true);
         handleOrder(drink);
+    }
+
+    const handleConfirm = (drink) => {
+        console.log('Yup');
     }
 
     let handleOrder = async (drink) => {
@@ -61,22 +64,19 @@ const Order  = (props) => {
         // console.log(JSON.stringify(data, null, 4));
     };
 
-    if (confirm) {
-        modal = <Confirm/>
-    }
-
     return (
         <div className='order'>
 
             <Header/>
-            { modal }
+            {confirm? <Confirm handleConfirm = {() => handleConfirm()} closeModal = {() => setConfirm(!confirm)}/> : <div/>}
+
             <h2 className="order_title">Order a Drink</h2>
             
             <div className="menu">
-                {drinks.map(drink => (
-                    <Drink name={drink.name} function={() => handleConfirm(drink)} key={Math.random()} />
+                {drinkList.map(drink => (
+                    <Drink name={drink.name} function={() => promptComfirm(drink)} key={Math.random()} />
                 ))}
-                <Drink name="Custom" function={() => handleConfirm('cat')} key={Math.random()}/>
+                <Drink name="Custom" function={() => promptComfirm('Custom')} key={Math.random()}/>
             </div>
         </div>
     );

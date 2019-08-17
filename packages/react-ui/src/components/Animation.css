@@ -30,7 +30,7 @@
     height: 5px;
     width: 80px;
     vertical-align: bottom;
-    background-color: rgba(252, 189, 72, 0.801);
+    background-color: rgba(252, 189, 72, 0.80);
     overflow: hidden;
 
     -webkit-animation-name: drink_fill; /* Safari 4.0 - 8.0 */
@@ -89,7 +89,7 @@
 
 @keyframes straw_drop {
     from {
-        opacity: 1;
+        opacity: .2;
         bottom: 100px;
     }
     
