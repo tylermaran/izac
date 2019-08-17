@@ -7,37 +7,14 @@ body {
 .order {
     font-family: 'Syncopate', sans-serif;
     text-align: center;
-    padding: 50px 0 0 0;
+    padding: 0 0 0 0;
     color: green;
-    /* background-color: rgb(31, 27, 27); */
     width: 100%;
     height: auto;
     min-height: 100%;
 }
 
-.header {
-    font-size: 30px;
-
-}
-
-.menu {
-    margin: 50px 0 0 0;
-}
-
-.drink {
-    height: 100px;
-    width: 30%;
-    margin: 20px auto;
-    border: 2px solid green;
-}
-
-.drink:hover {
-    border: 5px solid green;
-    font-style: italic;
-}
-
-.drink_name {
-    margin-top: 40px;
-    font-size: 20px;
+.order_title {
+    margin-top: 80px;
     font-weight: bold;
 }

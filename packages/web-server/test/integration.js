@@ -44,7 +44,7 @@ const api = new API(baseURL);
 // ---
 
 tap.only('start test server', async () => {
-  fs.unlinkSync(serverConfig.sqlite3.filename);
+  try {  fs.unlinkSync(serverConfig.sqlite3.filename); } catch(e) {}
 
   server = new Server(serverConfig);
 
