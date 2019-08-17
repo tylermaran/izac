@@ -271,7 +271,10 @@ exports.pour = (db) => async (req, res) => {
 
     await Promise.all([
       // of course, all drinks get a straw
-      robots.dispenseStraw().then(() => {
+      //
+      // @TODO remove this lmao
+      //
+      robots.dispenseStraw(8).then(() => {
         console.log('finished dispensing straw');
       }),
 

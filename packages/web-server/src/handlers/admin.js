@@ -72,6 +72,9 @@ exports.database.init = (db) => async (req, res) => {
   // raspberry pi (1 total)
   const { lastID: piDeviceID } = await db.device.add(piTypeID, "mind_of_iZac");
 
+  // straw dispenser (1 total)
+  const { lastID: strawDispenserDeviceID } = await db.device.add(strawDispenserTypeID, "staw_dispenser");
+
   // peristaltic pumps (4 total)
   const { lastID: cokeDeviceID  } = await db.device.add(periPumpTypeID, "coke");
   const { lastID: tonicDeviceID  } = await db.device.add(periPumpTypeID, "tonic");
@@ -129,7 +132,7 @@ exports.database.init = (db) => async (req, res) => {
   await db.pin.add(piDeviceID, 11, e_UndefinedDeviceID, actionPumpForwardID);
   await db.pin.add(piDeviceID, 10, e_UndefinedDeviceID, actionPumpReverseID);
   // 9
-  // 8
+  await db.pin.add(piDeviceID, 8, strawDispenserDeviceID, actionDispenseID);
   // 7
   // 6
   // 5
