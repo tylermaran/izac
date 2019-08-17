@@ -38,11 +38,11 @@ const Order  = (props) => {
     const promptComfirm = (drink) => {
         // show confirm
         setConfirm(true);
-        handleOrder(drink);
     }
 
     const handleConfirm = (drink) => {
         console.log('Yup');
+        handleOrder(drink);
     }
 
     let handleOrder = async (drink) => {
@@ -52,16 +52,16 @@ const Order  = (props) => {
         // Make the network request.
         //
         // THIS BLOCKS UNTIL FINISHED
-        // const data = await api.drink.pour(drink.id);
+        const data = await api.drink.pour(drink.id);
 
         // Temp timeout
-        setTimeout(()=>{
-            console.log('Drink Poured');
-        }, 3000);
+        // setTimeout(()=>{
+        //     console.log('Drink Poured');
+        // }, 3000);
         
         // i.e. we don't print this out until the
         // robot is done pouring the drink :)
-        // console.log(JSON.stringify(data, null, 4));
+        console.log(JSON.stringify(data, null, 4));
     };
 
     return (
@@ -75,7 +75,7 @@ const Order  = (props) => {
             <div className="menu">
                 {drinkList.map(drink => (
                     <Drink name={drink.name} function={() => promptComfirm(drink)} key={Math.random()} />
-                ))}
+                ))} 
                 <Drink name="Custom" function={() => promptComfirm('Custom')} key={Math.random()}/>
             </div>
         </div>
