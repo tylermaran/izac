@@ -19,67 +19,77 @@ import './Order.css'
 const api = new API('http://localhost:5000');
 
 const Order  = (props) => {
-    // React Hooks Reference:
+  // React Hooks Reference:
+  //
+  // https://reactjs.org/docs/hooks-reference.html#useeffect
+  //
+  const [drinkList, setDrinkList] = useState([]);
+  const [confirm, setConfirm] = useState(false);
+  const [currentDrink, setCurrentDrink] = useState(null);
+
+  useEffect(() => {
+    api.drink.list().then(data => {
+      console.log(data);
+      // console.log(JSON.stringify(data, null, 4));
+      setDrinkList(data.drinks)
+    });
+  }, []);
+
+  const promptComfirm = (drink) => {
+    console.log('2. opening the prompt', drink);
+
+    // show confirm
+    setConfirm(true);
+    setCurrentDrink(drink);
+  }
+
+  const handleConfirm = () => {
+    console.log('Yup');
+    return handleOrder();
+  }
+
+  let handleOrder = async () => {
+    // Print out what we are ordering
+    console.log('Ordering a ' + currentDrink.name);
+
+    // Make the network request.
     //
-    // https://reactjs.org/docs/hooks-reference.html#useeffect
-    //
-    const [drinkList, setDrinkList] = useState([]);
-    const [confirm, setConfirm] = useState(false);
-    // const [drinks]
+    // THIS BLOCKS UNTIL FINISHED
 
-    useEffect(() => {
-        api.drink.list().then(data => {
-            console.log(data);
-            // console.log(JSON.stringify(data, null, 4));
-            setDrinkList(data.drinks)
-        });
-    }, []);
+    const data = await api.drink.pour(currentDrink.id);
 
-    const promptComfirm = (drink) => {
-        // show confirm
-        setConfirm(true);
-    }
+    // Temp timeout
+    // setTimeout(()=>{
+    //     console.log('Drink Poured');
+    // }, 3000);
 
-    const handleConfirm = (drink) => {
-        console.log('Yup');
-        handleOrder(drink);
-    }
+    // i.e. we don't print this out until the
+    // robot is done pouring the drink :)
+    console.log(JSON.stringify(data, null, 4));
+  };
 
-    let handleOrder = async (drink) => {
-        // Print out what we are ordering
-        console.log('Ordering a ' + drink.name);
+  return (
+    <div className='order'>
 
-        // Make the network request.
-        //
-        // THIS BLOCKS UNTIL FINISHED
-        const data = await api.drink.pour(drink.id);
+      <Header/>
+      { confirm ? <Confirm handleConfirm={() => handleConfirm()}
+                           closeModal = {() => setConfirm(!confirm)}/> : <div/>}
 
-        // Temp timeout
-        // setTimeout(()=>{
-        //     console.log('Drink Poured');
-        // }, 3000);
-        
-        // i.e. we don't print this out until the
-        // robot is done pouring the drink :)
-        console.log(JSON.stringify(data, null, 4));
-    };
+      <h2 className="order_title">Order a Drink</h2>
 
-    return (
-        <div className='order'>
+      <div className="menu">
+        {drinkList.map(drink => (
+          <Drink name={drink.name}
+                 function={() => promptComfirm(drink)}
+                 key={Math.random()} />
+        ))}
 
-            <Header/>
-            {confirm? <Confirm handleConfirm = {() => handleConfirm()} closeModal = {() => setConfirm(!confirm)}/> : <div/>}
-
-            <h2 className="order_title">Order a Drink</h2>
-            
-            <div className="menu">
-                {drinkList.map(drink => (
-                    <Drink name={drink.name} function={() => promptComfirm(drink)} key={Math.random()} />
-                ))} 
-                <Drink name="Custom" function={() => promptComfirm('Custom')} key={Math.random()}/>
-            </div>
-        </div>
-    );
+        <Drink name="Custom"
+               function={() => promptComfirm('Custom')}
+               key={Math.random()}/>
+      </div>
+    </div>
+  );
 }
 
 export default Order;
