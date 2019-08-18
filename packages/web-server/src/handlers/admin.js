@@ -1,4 +1,4 @@
-// const rpio = require('rpio');
+const rpio = require('rpio');
 const { pin } = require('../robots');
 
 const FOUR_OZ_IN_LITERS = 0.118294;
@@ -107,7 +107,7 @@ exports.database.init = (db) => async (req, res) => {
   await db.pin.add(piDeviceID, 36, vodkaDeviceID, actionPumpForwardID);
   await db.pin.add(piDeviceID, 35, lemonLimeDeviceID, actionPumpForwardID);
   // 34
-  await db.pin.add(piDeviceID, 33, lemonLimeDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 33, scotchDeviceID, actionPumpForwardID);
   await db.pin.add(piDeviceID, 32, irishWhiskyDeviceID, actionPumpForwardID);
   await db.pin.add(piDeviceID, 31, cranberryDeviceID, actionPumpForwardID);
   // 30
