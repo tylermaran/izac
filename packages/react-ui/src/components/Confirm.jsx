@@ -13,10 +13,11 @@ const Confirm = (props) => {
 
   let div;
   let pour = 'Pour';
+
   if (animation) {
     div = (
       <div className="confirm_animation">
-        <Animation time = {10} />
+        <Animation time = {props.pourTime} />
       </div>
     )
     pour = 'Pouring...'
@@ -24,6 +25,13 @@ const Confirm = (props) => {
     div = (
       <div className="confirm_image"></div>
     )
+  }
+
+  if (props.drinkComplete) {
+    pour = 'Enjoy!';
+    setTimeout(()=> {
+      props.closeModal();
+    }, 2000)
   }
 
   return (
@@ -37,7 +45,6 @@ const Confirm = (props) => {
         {div}
 
         <button type="button" className="pour_drink" onClick={()=> {
-          console.log('1. pouring....');
           setAnimation(true);
           props.handleConfirm();
         }}>

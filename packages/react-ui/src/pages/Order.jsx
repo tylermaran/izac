@@ -26,6 +26,7 @@ const Order  = (props) => {
   const [drinkList, setDrinkList] = useState([]);
   const [confirm, setConfirm] = useState(false);
   const [currentDrink, setCurrentDrink] = useState(null);
+  const [drinkComplete, setDrinkComplete] = useState(false);
 
   useEffect(() => {
     api.drink.list().then(data => {
@@ -52,28 +53,30 @@ const Order  = (props) => {
     // Print out what we are ordering
     console.log('Ordering a ' + currentDrink.name);
 
-    // Make the network request.
-    //
-    // THIS BLOCKS UNTIL FINISHED
 
+    // Calls 'Pour' from the Barbot API
     const data = await api.drink.pour(currentDrink.id);
 
-    // Temp timeout
     // setTimeout(()=>{
-    //     console.log('Drink Poured');
-    // }, 3000);
+    //     setDrinkComplete(true);
+    // }, 5000)
 
     // i.e. we don't print this out until the
     // robot is done pouring the drink :)
     console.log(JSON.stringify(data, null, 4));
+    setDrinkComplete(true);
   };
 
   return (
     <div className='order'>
-
-      <Header/>
-      { confirm ? <Confirm handleConfirm={() => handleConfirm()}
-                           closeModal = {() => setConfirm(!confirm)}/> : <div/>}
+    
+    {/* TODO set pour time from drink object. Can't do it from windows >.> */}
+    <Header/>
+      { confirm ? <Confirm 
+                        pourTime = {5}
+                        drinkComplete = {drinkComplete}
+                        handleConfirm={() => handleConfirm()}
+                        closeModal = {() => setConfirm(!confirm)}/> : <></>}
 
       <h2 className="order_title">Order a Drink</h2>
 
