@@ -1,4 +1,4 @@
-// const rpio = require('rpio');
+const rpio = require('rpio');
 const { pin } = require('../robots');
 
 const FOUR_OZ_IN_LITERS = 0.118294;
@@ -8,22 +8,22 @@ const ONE_SHOT_CHASER = FOUR_OZ_IN_LITERS - SHOT_IN_LITERS;
 exports.pins = {};
 
 exports.pins.fire = (req, res) => {
-  // const { pin } = req.params;
+  const { pin } = req.params;
 
-  // let pinNumber;
-  // try {
-  //   pinNumber = parseInt(pin, 10);
-  // } catch (error) {
-  //   res.status(400).json({ error: "unable to parse provided pin" });
-  // }
+  let pinNumber;
+  try {
+    pinNumber = parseInt(pin, 10);
+  } catch (error) {
+    res.status(400).json({ error: "unable to parse provided pin" });
+  }
 
-  // rpio.open(pinNumber, rpio.OUTPUT, rpio.LOW);
-  // rpio.write(pinNumber, rpio.LOW);
+  rpio.open(pinNumber, rpio.OUTPUT, rpio.LOW);
+  rpio.write(pinNumber, rpio.LOW);
 
-  // setTimeout(() => {
-  //   rpio.write(pinNumber, rpio.HIGH);
-  //   res.status(204).end();
-  // }, 1000);
+  setTimeout(() => {
+    rpio.write(pinNumber, rpio.HIGH);
+    res.status(204).end();
+  }, 250);
 };
 
 exports.database = {};
@@ -107,7 +107,7 @@ exports.database.init = (db) => async (req, res) => {
   await db.pin.add(piDeviceID, 36, vodkaDeviceID, actionPumpForwardID);
   await db.pin.add(piDeviceID, 35, lemonLimeDeviceID, actionPumpForwardID);
   // 34
-  await db.pin.add(piDeviceID, 33, lemonLimeDeviceID, actionPumpForwardID);
+  await db.pin.add(piDeviceID, 33, scotchDeviceID, actionPumpForwardID);
   await db.pin.add(piDeviceID, 32, irishWhiskyDeviceID, actionPumpForwardID);
   await db.pin.add(piDeviceID, 31, cranberryDeviceID, actionPumpForwardID);
   // 30

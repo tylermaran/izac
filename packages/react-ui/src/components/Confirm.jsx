@@ -8,40 +8,46 @@ import './Confirm.css'
 import Animation from '../components/Animation';
 
 const Confirm = (props) => {
-    console.log(props);
-    const [animation, setAnimation] = useState(false)
+  console.log(props);
+  const [animation, setAnimation] = useState(false)
 
-    let div;
-    let pour = 'Pour';
-    if (animation) {
-        div = (
-            <div className="confirm_animation">
-                <Animation time = {10} />
-            </div>
-        )
-        pour = 'Pouring...'
-    } else {
-        div = (
-            <div className="confirm_image"></div>
-        )
-    }
-
-    return (
-        <div className="confirm">
-            <div className="backdrop" onClick={()=>props.closeModal()}> </div>
-         
-            <div className="popup">
-                <div className="confirm_title">
-                    Confirm Drink
-                </div>
-                {div}
-                
-                <button type="button" className="pour_drink" onClick={()=> setAnimation(true)}>{pour}</button>
-            </div>
-           
-        </div>
+  let div;
+  let pour = 'Pour';
+  if (animation) {
+    div = (
+      <div className="confirm_animation">
+        <Animation time = {10} />
+      </div>
     )
-    
+    pour = 'Pouring...'
+  } else {
+    div = (
+      <div className="confirm_image"></div>
+    )
+  }
+
+  return (
+    <div className="confirm">
+      <div className="backdrop" onClick={() => props.closeModal()}> </div>
+
+      <div className="popup">
+        <div className="confirm_title">
+          Confirm Drink
+        </div>
+        {div}
+
+        <button type="button" className="pour_drink" onClick={()=> {
+          console.log('1. pouring....');
+          setAnimation(true);
+          props.handleConfirm();
+        }}>
+          {pour}
+        </button>
+      </div>
+
+    </div>
+  )
+
 }
 
 export default Confirm;
