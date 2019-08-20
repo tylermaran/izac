@@ -64,6 +64,7 @@ const Order  = (props) => {
     // i.e. we don't print this out until the
     // robot is done pouring the drink :)
     console.log(JSON.stringify(data, null, 4));
+    console.log('Drink pouring done!');
     setDrinkComplete(true);
   };
 
