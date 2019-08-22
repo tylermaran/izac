@@ -11,5 +11,6 @@ exports.on_then_off = (pin, ms) => new Promise((resolve, reject) => {
 });
 
 exports.dispenseStraw = (pinForStrawDispenser) => {
-  return exports.on_then_off(pinForStrawDispenser, 10000);
+  return Promise.resolve(); // @TODO
+  // return exports.on_then_off(pinForStrawDispenser, 10000);
 }
