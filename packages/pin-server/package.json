@@ -1,0 +1,12 @@
+{
+  "name": "pin-server",
+  "version": "1.0.0",
+  "description": "pin-server ================================================================================",
+  "main": "index.js",
+  "scripts": {
+    "start": "/usr/bin/env dash ./bin/start.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
