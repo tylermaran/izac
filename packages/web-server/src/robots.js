@@ -1,14 +1,27 @@
-const rpio = require('rpio');
+const request = require('request');
 
-exports.on_then_off = (pin, ms) => new Promise((resolve, reject) => {
-  rpio.open(pin, rpio.OUTPUT, rpio.LOW);
-  rpio.write(pin, rpio.LOW);
+exports.fire = (pin, ms, output) => new Promise((resolve, reject) => {
+  request({
+    method: "POST",
+    uri: `http://localhost:5000/pins/${pin}/fire`
+    json: true,
+    body: JSON.stringify({
+      output,
+      sleep_ms: ms
+    })
+  }, function (error, response, body) {
+    if (error) {
+      console.error(error);
+      return reject(error);
+    }
 
-  setTimeout(() => {
-    rpio.write(pin, rpio.HIGH);
-    resolve();
-  }, ms);
+    return resolve();
+  });
 });
+
+exports.off_then_on = (pin, ms) => exports.fire(pin, ms, 0);
+
+exports.on_then_off = (pin, ms) => exports.fire(pin, ms, 1);
 
 exports.dispenseStraw = (pinForStrawDispenser) => {
   return Promise.resolve(); // @TODO
