@@ -1,7 +1,8 @@
-const express = require('express')
+const path = require('path');
+const express = require('express');
 const handlers = require('./handlers');
 
-exports.configureRoutes = function configureRoutes(app, clientDir, db) {
+exports.configureRoutes = function configureRoutes(app, clientDir, pinServerPort, db) {
   // Server routes (take priority over client routing).
   app.get('/bottles', handlers.bottles.getAll(db));
   app.post('/bottles', handlers.bottles.add(db));
@@ -11,9 +12,9 @@ exports.configureRoutes = function configureRoutes(app, clientDir, db) {
   app.get('/drinks', handlers.drinks.getAll(db));
   app.get('/drinks/:id', handlers.drinks.get(db));
   app.post('/drinks', handlers.drinks.add(db));
-  app.post('/drinks/:id/pour', handlers.drinks.pour(db));
+  app.post('/drinks/:id/pour', handlers.drinks.pour(db, pinServerPort));
 
-  app.post('/admin/pins/:pin/fire', handlers.admin.pins.fire);
+  app.post('/admin/pins/:pin/fire', handlers.admin.pins.fire(pinServerPort));
   app.post('/admin/database/init', handlers.admin.database.init(db));
   app.post('/admin/database/drop', handlers.admin.database.drop(db));
 

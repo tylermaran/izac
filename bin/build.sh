@@ -9,14 +9,6 @@
 SCRIPT_PATH=$(dirname "$0")
 SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
 
-# the directory our results will live in (first cli argument)
-BUILD_DIR="$1"
-
-if [ -z "${BUILD_DIR}" ]; then
-    echo "missing build directory (first argument)" >&2 # redirect to stderr
-    exit 1
-fi
-
 cleanup() {
     # clean up any previous builds if they exist
     [ -d $BUILD_DIR ] && {
@@ -24,6 +16,17 @@ cleanup() {
         rm -r $BUILD_DIR
     }
 }
+
+# the directory our results will live in (first cli argument)
+BUILD_DIR="$1"
+cleanup
+mkdir -p $BUILD_DIR # create the top-level build directoryv en
+BUILD_DIR=$(eval "cd \"$BUILD_DIR\" && pwd")
+
+if [ -z "${BUILD_DIR}" ]; then
+    echo "missing build directory (first argument)" >&2 # redirect to stderr
+    exit 1
+fi
 
 build_react_ui() {
     # using "(" and ")" creates a subshell where you can do things
@@ -36,49 +39,77 @@ build_react_ui() {
             echo "react-ui build failed lol" >&2
             exit 1
         }
+
+        mkdir "${BUILD_DIR}/react-ui"
+
+        mv ./build/* "${BUILD_DIR}/react-ui"
     )
 }
 
 build_web_server() {
     (
         cd "${SCRIPT_PATH}/../packages/web-server"
+        mkdir $BUILD_DIR/web-server
+        cp -r ./* $BUILD_DIR/web-server
     )
 }
 
 build_barbot_api() {
     (
         cd "${SCRIPT_PATH}/../packages/barbot-api"
+        mkdir "${BUILD_DIR}/barbot-api"
+        cp -r ./* "${BUILD_DIR}/barbot-api"
+    )
+}
+
+build_pin_server() {
+    (
+        cd "${SCRIPT_PATH}/../packages/pin-server"
+
+        virtualenv env
+        ./env/bin/pip3 install -r requirements.txt
+        mkdir $BUILD_DIR/pin-server
+        cp -r ./* $BUILD_DIR/pin-server
     )
 }
 
 build() {
-    mkdir $BUILD_DIR # create the top-level build directory
-
     (
         cd "${SCRIPT_PATH}/.."
         npx lerna bootstrap
     )
 
-    echo "building react-ui..."
+    echo ""
+    echo ".-+=:/|>---------------------<|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|> building barbot-api <|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|>---------------------<|\:=+-."
+    build_barbot_api || exit 1
 
-    # build the client code & transfer build to our top-level build dir
+    echo ""
+    echo ".-+=:/|>---------------------<|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|> building web-server <|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|>---------------------<|\:=+-."
+    build_web_server || exit 1
+
+    echo ""
+    echo ".-+=:/|>---------------------<|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|> building pin-server <|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|>---------------------<|\:=+-."
+    build_pin_server || exit 1
+
+    echo ""
+    echo ".-+=:/|>---------------------<|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|> building react-ui   <|\:=+-."
+    echo ".-+=:/|>                     <|\:=+-."
+    echo ".-+=:/|>---------------------<|\:=+-."
     build_react_ui || exit 1
-    mkdir "${BUILD_DIR}/react-ui"
-    mv "${SCRIPT_PATH}/../packages/react-ui/build"/* "${BUILD_DIR}/react-ui"
-
-    echo "building web-server..."
-
-    # copy the web-server code (incl. node_modules) to $BUILD_DIR/web-server
-    build_web_server
-    cp -r "${SCRIPT_PATH}/../packages/web-server" $BUILD_DIR
-
-    echo "building barbot-api..."
-
-    # copy the barbot-api code (incl. node_modules) to $BUILD_DIR/barbot-api
-    build_barbot_api
-    cp -r "${SCRIPT_PATH}/../packages/barbot-api" $BUILD_DIR
 }
 
-
-cleanup # cleanup the current directory before building. see function below
 build   # see build fn below.

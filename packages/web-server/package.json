@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "backend for barbot",
   "scripts": {
-    "start": "nodemon bin/main.js",
+    "start": "WEB_SERVER_PORT=5000 PIN_SERVER_PORT=5001 nodemon bin/start.js",
+    "prod": "node bin/start.js",
     "test": "tap"
   },
   "dependencies": {

@@ -2,4 +2,10 @@
 
 SCRIPT_PATH=`dirname "$0"`; SCRIPT_PATH=`eval "cd \"$SCRIPT_PATH\" && pwd"`
 
-FLASK_APP="${SCRIPT_PATH}/../server.py" python3 -m flask run
+ROOT="${SCRIPT_PATH}/../"
+
+cd $ROOT
+
+virtualenv env
+./env/bin/pip3 install -r requirements.txt
+./env/bin/python3 server.py

@@ -4,7 +4,8 @@
   "description": "pin-server ================================================================================",
   "main": "index.js",
   "scripts": {
-    "start": "/usr/bin/env dash ./bin/start.sh"
+    "start": "mkdir -p node_modules; PIN_SERVER_PORT=5001 ./bin/start.sh",
+    "prod": "mkdir -p node_modules; ./bin/start.sh"
   },
   "keywords": [],
   "author": "",
