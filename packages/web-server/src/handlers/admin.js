@@ -1,5 +1,4 @@
-const rpio = require('rpio');
-const { pin } = require('../robots');
+const { fire } = require('../robots');
 
 const FOUR_OZ_IN_LITERS = 0.118294;
 const SHOT_IN_LITERS = 0.044;
@@ -9,21 +8,9 @@ exports.pins = {};
 
 exports.pins.fire = (req, res) => {
   const { pin } = req.params;
+  const { sleep_ms, output } = req.body;
 
-  let pinNumber;
-  try {
-    pinNumber = parseInt(pin, 10);
-  } catch (error) {
-    res.status(400).json({ error: "unable to parse provided pin" });
-  }
-
-  rpio.open(pinNumber, rpio.OUTPUT, rpio.LOW);
-  rpio.write(pinNumber, rpio.LOW);
-
-  setTimeout(() => {
-    rpio.write(pinNumber, rpio.HIGH);
-    res.status(204).end();
-  }, 250);
+  return fire(pin, sleep_ms, output);
 };
 
 exports.database = {};
