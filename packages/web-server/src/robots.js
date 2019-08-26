@@ -3,20 +3,10 @@ const request = require('request');
 exports.fire = (pin, ms, output) => new Promise((resolve, reject) => {
   request({
     method: "POST",
-    uri: `http://localhost:5000/pins/${pin}/fire`
+    uri: `http://localhost:5000/pins/${pin}/fire`,
     json: true,
-    body: JSON.stringify({
-      output,
-      sleep_ms: ms
-    })
-  }, function (error, response, body) {
-    if (error) {
-      console.error(error);
-      return reject(error);
-    }
-
-    return resolve();
-  });
+    body: JSON.stringify({ output, sleep_ms: ms })
+  }, (error, response, body) => error ? reject(error) : resolve());
 });
 
 exports.off_then_on = (pin, ms) => exports.fire(pin, ms, 0);
