@@ -22,7 +22,10 @@ module.exports = class Server {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(bodyParser.json());
 
-    configureRoutes(this.app, options.client.baseDir, this.db);
+    configureRoutes(this.app,
+                    options.client.react.baseDir,
+                    options.server.pin.port,
+                    this.db);
   }
 
   async start() {

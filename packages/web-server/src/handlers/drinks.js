@@ -207,7 +207,7 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
   return Math.round(actual_duration);
 }
 
-exports.pour = (db) => async (req, res) => {
+exports.pour = (db, pinServerPort) => async (req, res) => {
 
   const invalidations = [];
   const {
@@ -296,7 +296,7 @@ exports.pour = (db) => async (req, res) => {
 
           console.log('air:::firing');
 
-          return robots.on_then_off(pin, pour_duration_ms).then(() => {
+          return robots.off_then_on(pinServerPort, pin, pour_duration_ms).then(() => {
             console.log('air:::done!');
           });
 
@@ -349,7 +349,7 @@ exports.pour = (db) => async (req, res) => {
 
           console.log(`peri:::firing forward pin ${forwardPin}`);
           // fire the pump in the forward direction
-          return robots.on_then_off(forwardPin, pour_duration_ms).then(() => {
+          return robots.off_then_on(pinServerPort, forwardPin, pour_duration_ms).then(() => {
             console.log('peri:::done w/ forward!');
             // suck it all back with a 100ms buffer
 
@@ -357,7 +357,7 @@ exports.pour = (db) => async (req, res) => {
 
           }).then(() => {
             console.log(`peri:::firing reverse pin ${reversePin}`);
-            return robots.on_then_off(reversePin, (pour_duration_ms)).then(() => {
+            return robots.off_then_on(pinServerPort, reversePin, (pour_duration_ms)).then(() => {
               console.log('peri:::done w/ reverse!');
             });
           });

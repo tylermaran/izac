@@ -1,5 +1,4 @@
-const rpio = require('rpio');
-const { pin } = require('../robots');
+const { fire } = require('../robots');
 
 const FOUR_OZ_IN_LITERS = 0.118294;
 const SHOT_IN_LITERS = 0.044;
@@ -7,23 +6,19 @@ const ONE_SHOT_CHASER = FOUR_OZ_IN_LITERS - SHOT_IN_LITERS;
 
 exports.pins = {};
 
-exports.pins.fire = (req, res) => {
+exports.pins.fire = (pinServerPort) => async (req, res) => {
   const { pin } = req.params;
+  const { sleep_ms, output } = req.body;
 
-  let pinNumber;
   try {
-    pinNumber = parseInt(pin, 10);
+    await fire(pinServerPort, pin, sleep_ms, output);
   } catch (error) {
-    res.status(400).json({ error: "unable to parse provided pin" });
+    const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
+    res.status(500).json({ id, error: "internal server error" });
+    console.error(id, error);
   }
 
-  rpio.open(pinNumber, rpio.OUTPUT, rpio.LOW);
-  rpio.write(pinNumber, rpio.LOW);
-
-  setTimeout(() => {
-    rpio.write(pinNumber, rpio.HIGH);
-    res.status(204).end();
-  }, 250);
+  return res.status(204).end();
 };
 
 exports.database = {};
@@ -53,7 +48,7 @@ exports.database.init = (db) => async (req, res) => {
   //
   // >>>> device types
   //
-  const { lastID: piTypeID } = await db.device_type.add('raspberry_pi_3_b+');
+  const { lastID: piTypeID } = await db.device_type.add('raspberry_pi_4b');
   const { lastID: periPumpTypeID } = await db.device_type.add('peristaltic_pump');
   const { lastID: airPumpTypeID } = await db.device_type.add('air_pump');
   const { lastID: strawDispenserTypeID } = await db.device_type.add('straw_dispenser');

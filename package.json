@@ -4,9 +4,9 @@
   "description": "world's best bartending robot",
   "private": true,
   "scripts": {
-    "start": "lerna run --parallel start",
+    "start": "./bin/dev.sh",
     "build": "./bin/build.sh ./build",
-    "prod": "cd build/web-server; ls -alh node_modules | grep express; NODE_ENV=production REACT_BUILD_DIR=../react-ui node ./bin/main.js"
+    "prod": "./bin/prod.sh ./build"
   },
   "repository": {
     "type": "git",

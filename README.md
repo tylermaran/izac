@@ -9,15 +9,11 @@ Requirements
 ### Runtime
 
   * Node.js (>= v8.15.1)
+  * Python3 (>= 3.7.3)
+  * [dash][da]
 
-### Build Tools
+[da]: https://en.wikipedia.org/wiki/Almquist_shell#dash:_Ubuntu,_Debian_and_POSIX_compliance_of_Linux_distributions
 
-The following tools are needed to build the C bindings for the node
-module [rpio](https://github.com/jperkin/node-rpio):
-
-  * Python (2.7)
-  * [make](https://www.gnu.org/software/make/)
-  * [gcc](https://gcc.gnu.org/)
 
 Dev Setup
 --------------------------------------------------
