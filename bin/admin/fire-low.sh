@@ -12,4 +12,4 @@ WEB_SERVER_PORT=5000
 
 curl -XPOST "localhost:${WEB_SERVER_PORT}/admin/pins/${PIN}/fire" \
      -H 'Content-Type: application/json' \
-     -d '{ "output": 0, "sleep_ms": 1000 }'
+     -d "{ \"output\": 0, \"sleep_ms\": ${DURATION_MS} }"
