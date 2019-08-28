@@ -27,6 +27,7 @@ const Order  = (props) => {
   const [confirm, setConfirm] = useState(false);
   const [currentDrink, setCurrentDrink] = useState(null);
   const [drinkComplete, setDrinkComplete] = useState(false);
+  const [blockUI, setBlockUI] = useState(false);
 
   useEffect(() => {
     api.drink.list().then(data => {
@@ -41,6 +42,8 @@ const Order  = (props) => {
 
     // show confirm
     setConfirm(true);
+    setBlockUI(true);
+    setDrinkComplete(false);
     setCurrentDrink(drink);
   }
 
@@ -57,15 +60,15 @@ const Order  = (props) => {
     // Calls 'Pour' from the Barbot API
     const data = await api.drink.pour(currentDrink.id);
 
-    // setTimeout(()=>{
-    //     setDrinkComplete(true);
-    // }, 5000)
-
     // i.e. we don't print this out until the
     // robot is done pouring the drink :)
     console.log(JSON.stringify(data, null, 4));
-    console.log('Drink pouring done!');
-    setDrinkComplete(true);
+    
+    setTimeout(() => {
+      console.log('Drink pouring done!');
+      setDrinkComplete(true);
+      setBlockUI(false);
+    }, 5000);
   };
 
   return (
@@ -82,6 +85,9 @@ const Order  = (props) => {
       <h2 className="order_title">Order a Drink</h2>
 
       <div className="menu">
+        
+        {blockUI? <div className="block"></div> : <></>}
+
         {drinkList.map(drink => (
           <Drink name={drink.name}
                  function={() => promptComfirm(drink)}
