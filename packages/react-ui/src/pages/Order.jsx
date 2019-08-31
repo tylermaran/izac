@@ -52,10 +52,21 @@ const Order  = (props) => {
     return handleOrder();
   }
 
+  const yeet = () => {
+    let yeet = 'http://pegasus.noise:5000/?text=';
+    let yeeted = 'you got it';
+
+    fetch(yeet + yeeted)
+      .then(function(response) {
+        return response.json();
+      }).then(function(myJson) {
+        // nothing
+    });
+  }
+
   let handleOrder = async () => {
     // Print out what we are ordering
     console.log('Ordering a ' + currentDrink.name);
-
 
     // Calls 'Pour' from the Barbot API
     const data = await api.drink.pour(currentDrink.id);
@@ -68,6 +79,7 @@ const Order  = (props) => {
       console.log('Drink pouring done!');
       setDrinkComplete(true);
       setBlockUI(false);
+      yeet();
     }, 5000);
   };
 
