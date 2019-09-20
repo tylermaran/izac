@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .nyc_output
+
+# ignore local machines migration state
+.migrate

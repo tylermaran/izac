@@ -13,6 +13,23 @@ Testing
  * Dependencies: `curl`, [`jq`][jq]
  * Run: `./test/integration.sh`
 
+Migrations
+--------------------------------------------------------------------------------
+
+If you heck with anything that modifies external state (e.g. database
+structure), you must create a new migration.
+
+In the current directory of this package:
+
+```
+npx migrate create <description-of-change>
+```
+
+It will create a new migration in the `migrations` directory. Go in
+there & implement the `up` and `down` functions accordingly. The migrations
+will be ran before the server starts.
+
+
 
 High-Level Routes
 --------------------------------------------------------------------------------

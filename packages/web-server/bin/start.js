@@ -2,6 +2,7 @@
 
 const path = require('path');
 const Server = require('../src/server');
+const migrations = require('../src/migrations');
 const cwd = process.cwd(); // store all files we create in the cwd.
 
 const config = {
@@ -36,11 +37,24 @@ const config = {
   },
   sqlite3: {
     filename: path.join(cwd, 'db.sqlite3')
+  },
+  migrations: {
+    migrationsDirectory: path.join(__dirname, '..', 'migrations'),
+    stateStore: path.join(cwd, '.migrate')
   }
 };
 
 (async function() {
-  console.log('...');
+  try {
+    // load new migrations before starting server
+    await migrations.load(config.migrations.migrationsDirectory,
+                          config.migrations.stateStore);
+  } catch (error) {
+    console.error('failed to load migrations');
+    console.error(error);
+    process.exit(1);
+  }
+
   const server = new Server(config);
   try {
     await server.start();
