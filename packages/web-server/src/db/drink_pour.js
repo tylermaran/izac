@@ -1,31 +1,3 @@
-const Sequelize = require('sequelize');
-const { Bottle } = require('./bottle');
-const { Drink } = require('./drink');
-
-class DrinkPour extends Sequelize.Model {}
-
-exports.DrinkPour = DrinkPour;
-
-exports.init = (sequelize) => DrinkPour.init({
-  liters: {
-    type: Sequelize.FLOAT,
-    allowNull: false
-  },
-  drink_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    references: { model: Drink, key: 'id' }
-  },
-  bottle_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    references: { model: Bottle, key: 'id' }
-  }
-}, {
-  sequelize,
-  modelName: 'drink_pour'
-});
-
 exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.run(`CREATE TABLE IF NOT EXISTS drink_pour (
      drink_id INTEGER NOT NULL,

@@ -1,20 +1,3 @@
-const Sequelize = require('sequelize');
-
-class DeviceType extends Sequelize.Model {}
-
-exports.DeviceType = DeviceType;
-
-exports.init = (sequelize) => DeviceType.init({
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    unique: true
-  }
-}, {
-  sequelize,
-  modelName: 'device_type'
-});
-
 exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.run(`CREATE TABLE IF NOT EXISTS device_type (
      id INTEGER PRIMARY KEY,

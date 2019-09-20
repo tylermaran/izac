@@ -1,19 +1,3 @@
-const Sequelize = require('sequelize');
-
-class DeviceAction extends Sequelize.Model {}
-
-exports.DeviceAction = DeviceAction;
-
-exports.init = (sequelize) => DeviceAction.init({
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false
-  }
-}, {
-  sequelize,
-  modelName: 'device_action'
-});
-
 exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.run(`CREATE TABLE IF NOT EXISTS device_action (
      id INTEGER PRIMARY KEY,

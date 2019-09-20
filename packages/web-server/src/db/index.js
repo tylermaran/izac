@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const { init } = require('./models');
 
 module.exports = class Database {
   constructor(sqlite3_db_filepath) {
@@ -7,6 +8,8 @@ module.exports = class Database {
       dialect: 'sqlite',
       storage: sqlite3_db_filepath
     });
+
+    this.models = init(sequelize);
 
     const dbModuleNames = [
       'device_type', 'device_action', 'device', 'pin',
@@ -19,8 +22,6 @@ module.exports = class Database {
     // API so we don't have to pass sequelize for every call.
     for (let moduleName of dbModuleNames) {
       const mod = require(`./${moduleName}`);
-
-      mod.init(sequelize);
 
       this[moduleName] = {};
 

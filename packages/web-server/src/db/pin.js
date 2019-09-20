@@ -1,38 +1,4 @@
 const device = require('./device');
-const Sequelize = require('sequelize');
-const { Device } = require('./device');
-const { DeviceAction } = require('./device_action');
-
-class Pin extends Sequelize.Model {}
-
-exports.Pin = Pin;
-
-exports.init = (sequelize) => Pin.init({
-  physical_pin_number: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    unique: true
-  },
-  device_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    references: { model: Device, key: 'id' }
-  },
-  attached_device_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    references: { model: Device, key: 'id' }
-  },
-  device_action_id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    references: { model: DeviceAction, key: 'id' }
-  }
-}, {
-  sequelize,
-  modelName: 'pin'
-});
-
 
 // device_id  ---------------------------- device this pin belongs to
 // physical_pin_number ------------------- physical pin number on device
