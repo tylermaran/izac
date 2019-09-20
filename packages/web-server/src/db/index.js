@@ -18,7 +18,9 @@ module.exports = class Database {
     // instance to all db modules. This cleans up our External (public)
     // API so we don't have to pass sequelize for every call.
     for (let moduleName of dbModuleNames) {
-      const mod = require(`./${module_name}`);
+      const mod = require(`./${moduleName}`);
+
+      mod.init(sequelize);
 
       this[moduleName] = {};
 
