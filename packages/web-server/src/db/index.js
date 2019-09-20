@@ -17,19 +17,16 @@ module.exports = class Database {
     // The cryptic code below creates closures that apply our sequelize
     // instance to all db modules. This cleans up our External (public)
     // API so we don't have to pass sequelize for every call.
-    dbModuleNames.forEach(module_name => {
+    for (let moduleName of dbModuleNames) {
       const mod = require(`./${module_name}`);
 
-      Object.keys(mod).forEach((key) => {
-        if (typeof this[module_name] === 'undefined') {
-          this[module_name] = {};
-        }
+      this[moduleName] = {};
 
-        this[module_name][key] = function () {
+      for (let key in mod) {
+        this[moduleName][key] = function () {
           return mod[key].apply(null, [ sequelize, ...arguments ]);
         };
-      });
-    });
+      }
+    }
   }
-
 }
