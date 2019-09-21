@@ -1,16 +1,3 @@
-exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
-  sqlite3_db.run(`CREATE TABLE IF NOT EXISTS device_type (
-     id INTEGER PRIMARY KEY,
-     name TEXT NOT NULL UNIQUE
-   );`, [], function(error) { // must use function as `this` is utilized in lib-sqlite3
-     return error ? reject(error) : resolve(this);
-   }));
-
-exports.drop = (sqlite3_db) => new Promise((resolve, reject) =>
-  sqlite3_db.run(`DROP TABLE IF EXISTS device_type;`, [], function(error) {
-    return error ? reject(error) : resolve(this);
-  }));
-
 exports.add = (sqlite3_db, name) => new Promise((resolve, reject) => {
   const sql = `INSERT INTO device_type (name) VALUES (?);`;
   const params = [ name ];

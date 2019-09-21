@@ -115,16 +115,19 @@ exports.init = function init(sequelize) {
   class Pin extends Sequelize.Model {}
   models.Pin = Pin;
   Pin.init({
+    // physical pin number on device
     physical_pin_number: {
       type: Sequelize.INTEGER,
       allowNull: false,
       unique: true
     },
+    // device this pin belongs to
     device_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: { model: Device, key: 'id' }
     },
+    // what device is attached to the pin?
     attached_device_id: {
       type: Sequelize.INTEGER,
       allowNull: false,

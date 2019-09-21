@@ -1,20 +1,3 @@
-exports.create = (sqlite3_db) => new Promise((resolve, reject) =>
-  sqlite3_db.run(`CREATE TABLE IF NOT EXISTS bottle (
-     id INTEGER PRIMARY KEY,
-     name TEXT NOT NULL,
-     max_liters REAL NOT NULL,
-     current_liters REAL NOT NULL,
-     attached_device_id INTEGER,
-     FOREIGN KEY(attached_device_id) REFERENCES device(id)
-   );`, [], function(error) { // must use function as `this` is utilized in lib-sqlite3
-     return error ? reject(error) : resolve(this);
-   }));
-
-exports.drop = (sqlite3_db) => new Promise((resolve, reject) =>
-  sqlite3_db.run(`DROP TABLE IF EXISTS bottle;`, [], function(error) {
-    return error ? reject(error) : resolve(this);
-  }));
-
 exports.getAll = (sqlite3_db) => new Promise((resolve, reject) =>
   sqlite3_db.all('SELECT * FROM bottle', [], function(error, rows) {
     return error ? reject(error) : resolve(rows)

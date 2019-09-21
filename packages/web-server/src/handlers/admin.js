@@ -23,27 +23,7 @@ exports.pins.fire = (pinServerPort) => async (req, res) => {
 
 exports.database = {};
 
-exports.database.drop = (db) => async(req, res) => {
-  await db.bottle.drop();
-  await db.device.drop();
-  await db.device_action.drop();
-  await db.device_type.drop();
-  await db.drink.drop();
-  await db.drink_pour.drop();
-  await db.pin.drop();
-
-  return res.status(204).end();
-};
-
 exports.database.init = (db) => async (req, res) => {
-
-  await db.bottle.create();
-  await db.device.create();
-  await db.device_action.create();
-  await db.device_type.create();
-  await db.drink.create();
-  await db.drink_pour.create();
-  await db.pin.create();
 
   //
   // >>>> device types
