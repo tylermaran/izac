@@ -15,11 +15,7 @@ module.exports = class Database {
 
     this.models = models;
 
-    const dbModuleNames = [
-      'device_type', 'device_action', 'device', 'pin',
-      'bottle',
-      'drink', 'drink_pour',
-    ];
+    const dbModuleNames = [ 'bottle', 'drink' ];
 
     // The cryptic code below creates closures that apply our sequelize
     // instance to all db modules. This cleans up our External (public)
