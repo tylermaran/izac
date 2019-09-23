@@ -73,6 +73,10 @@ exports.init = function init(sequelize) {
   // ---
   class Pour extends Model {}
   Pour.init({
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
     liters: {
       type: Sequelize.FLOAT,
       allowNull: false

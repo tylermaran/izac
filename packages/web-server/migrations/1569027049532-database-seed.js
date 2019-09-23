@@ -444,61 +444,73 @@ module.exports.up = function (next) {
 
       const pour_shot_spicedRum = await Pour.create({
         liters: ONE_SHOT_L,
+        name: 'one shot spiced rum',
         bottle_id: bottle_spicedRum.get('id')
       });
 
       const pour_shot_gin = await Pour.create({
         liters: ONE_SHOT_L,
+        name: 'one shot gin',
         bottle_id: bottle_gin.get('id')
       });
 
       const pour_shot_scotch = await Pour.create({
         liters: ONE_SHOT_L,
+        name: 'one shot scotch',
         bottle_id: bottle_scotch.get('id')
       });
 
       const pour_shot_irishWhisky = await Pour.create({
         liters: ONE_SHOT_L,
+        name: 'one shot irish whisky',
         bottle_id: bottle_irishWhisky.get('id')
       });
 
       const pour_shot_tequila = await Pour.create({
         liters: ONE_SHOT_L,
+        name: 'one shot tequila',
         bottle_id: bottle_tequila.get('id')
       });
 
       const pour_shot_vodka = await Pour.create({
         liters: ONE_SHOT_L,
+        name: 'one shot vodka',
         bottle_id: bottle_vodka.get('id')
       });
 
       const pour_shot_bourbon = await Pour.create({
         liters: ONE_SHOT_L,
+        name: 'one shot bourbon',
         bottle_id: bottle_bourbon.get('id')
       });
 
       const pour_shot_chaser_gingerAle = await Pour.create({
         liters: ONE_SHOT_CHASER_L,
+        name: 'ginger ale chaser (for one shot of liquor)',
         bottle_id: bottle_gingerAle.get('id')
       });
 
       const pour_shot_chaser_coke = await Pour.create({
         liters: ONE_SHOT_CHASER_L,
+        name: 'coke chaser (for one shot of liquor)',
         bottle_id: bottle_coke.get('id')
       });
 
       const pour_shot_chaser_tonic = await Pour.create({
         liters: ONE_SHOT_CHASER_L,
+        name: 'tonic chaser (for one shot of liquor)',
         bottle_id: bottle_tonic.get('id')
       });
 
       const pour_shot_chaser_lemonLime = await Pour.create({
         liters: ONE_SHOT_CHASER_L,
+        name: 'lemon lime chaser (for one shot of liquor)',
         bottle_id: bottle_lemonLime.get('id')
       });
 
       const pour_shot_chaser_cranberry = await Pour.create({
         liters: ONE_SHOT_CHASER_L,
+        name: 'cranberry chaser (for one shot of liquor)',
         bottle_id: bottle_cranberry.get('id')
       });
 
