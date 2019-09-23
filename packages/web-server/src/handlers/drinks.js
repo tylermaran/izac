@@ -16,28 +16,14 @@ exports.get = (db) => async (req, res) => {
   }
 
   try {
-    const drink = await db.drink.getById(id);
+    const drink = await db.drink.getByIdWithPours(id);
 
     if (!drink) {
       res.status(404).json({ error: 'drink not found' });
       return;
     }
 
-    const pours = await db.drink_pour.getPoursForDrink(drink.id);
-    if (!pours) {
-      res.status(404).json({ error: `pours for drink ${drink.id} not found` });
-      return;
-    }
-
-    res.status(200).json({
-      id: drink.id,
-      name: drink.name,
-      pours: pours.map(pour => ({
-        bottle_id: pour.bottle_id,
-        liters: pour.liters
-      }))
-    });
-
+    res.status(200).json(drink);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
     res.status(500).json({ id, error: "internal server error" });
@@ -47,40 +33,14 @@ exports.get = (db) => async (req, res) => {
 
 exports.getAll = (db) => async (req, res) => {
   try {
-    const data = {
-      drinks: []
-    };
-
-    const drinks = await db.drink.getAll();
+    const drinks = await db.drink.getAllWithPours();
 
     if (!drinks) {
       res.status(404).json({ error: 'no drinks not found' });
       return;
     }
 
-    for (let i = 0; i < drinks.length; i++) {
-      const drink = drinks[i];
-
-      const pours = await db.drink_pour.getPoursForDrink(drink.id);
-      if (!pours) {
-        res.status(404).json({
-          error: `pours for drink (id=${drink.id}) not found`
-        });
-        return;
-      }
-
-      const entry = Object.assign({}, drink, {
-        pours: pours.map(pour => ({
-          bottle_id: pour.bottle_id,
-          liters: pour.liters
-        }))
-      });
-
-      data.drinks.push(entry);
-    }
-
-    res.status(200).json(data);
-
+    res.status(200).json(drinks);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
     res.status(500).json({ id, error: "internal server error" });
