@@ -347,91 +347,91 @@ module.exports.up = function (next) {
       const bottle_spicedRum = await Bottle.create({
         name: "spiced rum",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_spicedRum.get('id')
       });
 
       const bottle_tequila = await Bottle.create({
         name: "tequila",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_tequila.get('id')
       });
 
       const bottle_gin = await Bottle.create({
         name: "gin",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_gin.get('id')
       });
 
       const bottle_bourbon = await Bottle.create({
         name: "bourbon",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_bourbon.get('id')
       });
 
       const bottle_vodka = await Bottle.create({
         name: "vodka",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_vodka.get('id')
       });
 
       const bottle_lemonLime = await Bottle.create({
         name: "lemon lime",
         max_liters: 2,
-        current_liters: 2,
+        fill: 1,
         device_id: device_lemonLime.get('id')
       });
 
       const bottle_scotch = await Bottle.create({
         name: "scotch",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_scotch.get('id')
       });
 
       const bottle_irishWhisky = await Bottle.create({
         name: "irish whisky",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_irishWhisky.get('id')
       });
 
       const bottle_cranberry = await Bottle.create({
         name: "cranberry",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_cranberry.get('id')
       });
 
       const bottle_coffeeLiquor = await Bottle.create({
         name: "coffee liquor",
         max_liters: 1.75,
-        current_liters: 1.75,
+        fill: 1,
         device_id: device_coffeeLiquor.get('id')
       });
 
       const bottle_coke = await Bottle.create({
         name: "coke",
         max_liters: 2,
-        current_liters: 2,
+        fill: 1,
         device_id: device_coke.get('id')
       });
 
       const bottle_gingerAle = await Bottle.create({
         name: "ginger ale",
         max_liters: 2,
-        current_liters: 2,
+        fill: 1,
         device_id: device_gingerAle.get('id')
       });
 
       const bottle_tonic = await Bottle.create({
         name: "tonic",
         max_liters: 2,
-        current_liters: 2,
+        fill: 1,
         device_id: device_tonic.get('id')
       });
 

@@ -41,7 +41,12 @@ exports.init = function init(sequelize) {
       type: Sequelize.FLOAT,
       allowNull: false
     },
-    current_liters: {
+    /**
+     *  A number between zero and one.
+     *  0 = bottle is empty
+     *  1 = bottle is full
+     */
+    fill: {
       type: Sequelize.FLOAT,
       allowNull: false
     }
