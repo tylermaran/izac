@@ -1,12 +1,10 @@
 const Sequelize = require('sequelize');
+const Model = Sequelize.Model;
 
 exports.init = function init(sequelize) {
 
-  const models = {};
-
   // ---
-  class DeviceType extends Sequelize.Model {}
-  models.DeviceType = DeviceType;
+  class DeviceType extends Model {}
   DeviceType.init({
     name: {
       type: Sequelize.STRING,
@@ -15,32 +13,26 @@ exports.init = function init(sequelize) {
     }
   }, {
     sequelize,
+    underscored: true,
     modelName: 'device_type'
   });
 
   // ---
-  class Device extends Sequelize.Model {}
-  models.Device = Device;
+  class Device extends Model {}
   Device.init({
     name: {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true
-    },
-    device_type_id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: { model: DeviceType, key: 'id' }
     }
   }, {
     sequelize,
+    underscored: true,
     modelName: 'device'
   });
 
-
   // ---
-  class Bottle extends Sequelize.Model {}
-  models.Bottle = Bottle;
+  class Bottle extends Model {}
   Bottle.init({
     name: {
       type: Sequelize.STRING,
@@ -56,14 +48,12 @@ exports.init = function init(sequelize) {
     }
   }, {
     sequelize,
+    underscored: true,
     modelName: 'bottle'
   });
 
-  Bottle.hasOne(Device);
-
   // ---
-  class DeviceAction extends Sequelize.Model {}
-  models.DeviceAction = DeviceAction;
+  class DeviceAction extends Model {}
   DeviceAction.init({
     name: {
       type: Sequelize.STRING,
@@ -71,13 +61,12 @@ exports.init = function init(sequelize) {
     }
   }, {
     sequelize,
+    underscored: true,
     modelName: 'device_action'
   });
 
-
   // ---
-  class Drink extends Sequelize.Model {}
-  models.Drink = Drink;
+  class Drink extends Model {}
   Drink.init({
     name: {
       type: Sequelize.STRING,
@@ -85,65 +74,66 @@ exports.init = function init(sequelize) {
     }
   }, {
     sequelize,
+    underscored: true,
     modelName: 'drink'
   });
 
   // ---
-  class DrinkPour extends Sequelize.Model {}
-  models.DrinkPour = DrinkPour;
-  DrinkPour.init({
+  class Pour extends Model {}
+  Pour.init({
     liters: {
       type: Sequelize.FLOAT,
       allowNull: false
-    },
-    drink_id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: { model: Drink, key: 'id' }
-    },
-    bottle_id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: { model: Bottle, key: 'id' }
     }
   }, {
     sequelize,
-    modelName: 'drink_pour'
+    underscored: true,
+    modelName: 'pour'
   });
 
   // ---
-  class Pin extends Sequelize.Model {}
-  models.Pin = Pin;
+  class Pin extends Model {}
   Pin.init({
     // physical pin number on device
     physical_pin_number: {
       type: Sequelize.INTEGER,
       allowNull: false,
       unique: true
-    },
-    // device this pin belongs to
-    device_id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: { model: Device, key: 'id' }
-    },
-    // what device is attached to the pin?
-    attached_device_id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: { model: Device, key: 'id' }
-    },
-    device_action_id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: { model: DeviceAction, key: 'id' }
     }
   }, {
     sequelize,
+    underscored: true,
     modelName: 'pin'
   });
 
 
-  // - - - - - - - -  - - -
-  return models;
+
+  // - - - - - - - - - - -
+
+  Device.belongsTo(DeviceType);
+
+  Bottle.belongsTo(Device);
+
+  Pour.belongsToMany(Drink, { through: 'drink_pour' });
+  Drink.belongsToMany(Pour, { through: 'drink_pour' });
+
+  Pour.belongsTo(Bottle);
+
+  // device this pin belongs to
+  Pin.belongsTo(Device, {as: 'Device', foreignKey: 'device_id'});
+  // what device is attached to the pin?
+  Pin.belongsTo(Device, {as: 'AttachedDevice', foreignKey: 'attached_device_id'});
+  // what action does this device perform?
+  Pin.belongsTo(DeviceAction);
+
+  // - - - - - - - - - - -
+  return {
+    DeviceType,
+    Device,
+    Bottle,
+    DeviceAction,
+    Drink,
+    Pour,
+    Pin
+  };
 }
