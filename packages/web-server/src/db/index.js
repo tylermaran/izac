@@ -9,6 +9,8 @@ module.exports = class Database {
       storage: sqlite3_db_filepath
     });
 
+    this.__sequelize = sequelize;
+
     this.models = init(sequelize);
 
     const dbModuleNames = [
@@ -31,5 +33,9 @@ module.exports = class Database {
         };
       }
     }
+  }
+
+  __sync(options) {
+    return this.__sequelize.sync(options);
   }
 }
