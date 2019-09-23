@@ -5,7 +5,6 @@ const handlers = require('./handlers');
 exports.configureRoutes = function configureRoutes(app, clientDir, pinServerPort, db) {
   // Server routes (take priority over client routing).
   app.get('/bottles', handlers.bottles.getAll(db));
-  app.post('/bottles', handlers.bottles.add(db));
   app.get('/bottles/:id', handlers.bottles.get(db));
   app.post('/bottles/:id/refill', handlers.bottles.refill(db));
 
