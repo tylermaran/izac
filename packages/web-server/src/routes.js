@@ -10,7 +10,6 @@ exports.configureRoutes = function configureRoutes(app, clientDir, pinServerPort
 
   app.get('/drinks', handlers.drinks.getAll(db));
   app.get('/drinks/:id', handlers.drinks.get(db));
-  app.post('/drinks', handlers.drinks.add(db));
   app.post('/drinks/:id/pour', handlers.drinks.pour(db, pinServerPort));
 
   app.post('/admin/pins/:pin/fire', handlers.admin.pins.fire(pinServerPort));

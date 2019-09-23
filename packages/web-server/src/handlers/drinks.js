@@ -48,52 +48,6 @@ exports.getAll = (db) => async (req, res) => {
   }
 };
 
-exports.add = (db) => async (req, res) => {
-  const invalidations = [];
-  const { name, pours } = req.body;
-
-  if (typeof name !== 'string') {
-    invalidations.push("name isn't of type string");
-  }
-
-  if (!(pours instanceof Array)) {
-    invalidations.push('pours is not an array');
-  } else {
-    pours.forEach(pour => {
-      if (typeof pour.bottle_id !== 'number') {
-        invalidations.push("pour is missing a bottle id");
-      }
-      if (typeof pour.liters !== 'number') {
-        invalidations.push("pour is missing a liters amount");
-      }
-    });
-  }
-
-  if (invalidations.length > 0) {
-    res.status(400).json({ errors: invalidations });
-    return;
-  }
-
-  try {
-    const add_result = await db.drink.add(name, pours);
-    const drink_id = add_result.drink_statement.lastID;
-    const drink = await db.drink.getById(drink_id);
-    const db_pours = await db.drink_pour.getPoursForDrink(drink.id);
-
-    res.status(200).json(Object.assign({}, drink, {
-      pours: db_pours.map(pour => ({
-        bottle_id: pour.bottle_id,
-        liters: pour.liters
-      }))
-    }));
-
-  } catch (error) {
-    const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
-    res.status(500).json({ id, error: "internal server error" });
-    console.error(id, error);
-  }
-};
-
 function get_peristaltic_bottle_pour_duration(liter_pour) {
   // our mesurement of what a shot is. This is a ratio that represents how
   // long it takes to pour a shot with the peristaltic pumps.
