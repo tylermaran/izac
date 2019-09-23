@@ -11,7 +11,9 @@ module.exports = class Database {
 
     this.__sequelize = sequelize;
 
-    this.models = init(sequelize);
+    const models = init(sequelize);
+
+    this.models = models;
 
     const dbModuleNames = [
       'device_type', 'device_action', 'device', 'pin',
@@ -29,7 +31,7 @@ module.exports = class Database {
 
       for (let key in mod) {
         this[moduleName][key] = function () {
-          return mod[key].apply(null, [ sequelize, ...arguments ]);
+          return mod[key].apply(null, [ models, ...arguments ]);
         };
       }
     }

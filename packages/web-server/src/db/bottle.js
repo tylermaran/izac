@@ -1,45 +1,11 @@
-exports.getAll = (sqlite3_db) => new Promise((resolve, reject) =>
-  sqlite3_db.all('SELECT * FROM bottle', [], function(error, rows) {
-    return error ? reject(error) : resolve(rows)
-  }));
+exports.getAll = (models) =>
+  models.Bottle.findAll().then(xs => xs.map(x => x.toJSON()));
 
-exports.getById = (sqlite3_db, id) => new Promise((resolve, reject) =>
-  sqlite3_db.get('SELECT * FROM bottle WHERE id=?', [
-    id
-  ], function(error, result) {
-    return error ? reject(error) : resolve(result);
-  }));
+exports.getById = (models, id) =>
+  models.Bottle.findOne({ where: { id } }).then(m => m.toJSON());
 
-exports.setBottleLevel = (sqlite3_db, bottle_id, new_liters) => new Promise((resolve, reject) =>
-  sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [
-    new_liters,
-    bottle_id
-  ], function(error) {
-    return error ? reject(error) : resolve(this);
-  }));
+exports.setBottleFill = (models, id, fill) =>
+  models.Bottle.update({ fill }, { where: { id } })
 
-exports.add = (sqlite3_db, name, max_liters, attached_device_id) => new Promise((resolve, reject) => {
-
-  const sql = `INSERT INTO bottle (
-    name, max_liters, current_liters, attached_device_id
-  ) VALUES (?, ?, ?, ?);`;
-
-  const params = [
-    name, max_liters, max_liters, attached_device_id
-  ];
-
-  sqlite3_db.run(sql, params, function(error) {
-    return error ? reject(error) : resolve(this);
-  });
-});
-
-exports.refill = async (sqlite3_db, id) => {
-  const bottle = await exports.getById(sqlite3_db, id);
-
-  return new Promise((resolve, reject) =>
-    sqlite3_db.run(`UPDATE bottle SET current_liters=? WHERE id=?`, [
-      bottle.max_liters, id
-    ], function(error) {
-      return error ? reject(error) : resolve(this);
-    }));
-}
+exports.refill = (models, id) =>
+  models.Bottle.update({ fill: 1 }, { where: { id } })
