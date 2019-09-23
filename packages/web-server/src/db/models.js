@@ -3,6 +3,13 @@ const Model = Sequelize.Model;
 
 exports.init = function init(sequelize) {
 
+  const defaultModelOptions = {
+    sequelize,
+    underscored: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  };
+
   // ---
   class DeviceType extends Model {}
   DeviceType.init({
@@ -11,11 +18,7 @@ exports.init = function init(sequelize) {
       allowNull: false,
       unique: true
     }
-  }, {
-    sequelize,
-    underscored: true,
-    modelName: 'device_type'
-  });
+  }, { ...defaultModelOptions, modelName: 'device_type' });
 
   // ---
   class Device extends Model {}
@@ -25,11 +28,7 @@ exports.init = function init(sequelize) {
       allowNull: false,
       unique: true
     }
-  }, {
-    sequelize,
-    underscored: true,
-    modelName: 'device'
-  });
+  }, { ...defaultModelOptions, modelName: 'device' });
 
   // ---
   class Bottle extends Model {}
@@ -46,11 +45,7 @@ exports.init = function init(sequelize) {
       type: Sequelize.FLOAT,
       allowNull: false
     }
-  }, {
-    sequelize,
-    underscored: true,
-    modelName: 'bottle'
-  });
+  }, { ...defaultModelOptions, modelName: 'bottle' });
 
   // ---
   class DeviceAction extends Model {}
@@ -59,11 +54,7 @@ exports.init = function init(sequelize) {
       type: Sequelize.STRING,
       allowNull: false
     }
-  }, {
-    sequelize,
-    underscored: true,
-    modelName: 'device_action'
-  });
+  }, { ...defaultModelOptions, modelName: 'device_action' });
 
   // ---
   class Drink extends Model {}
@@ -72,11 +63,7 @@ exports.init = function init(sequelize) {
       type: Sequelize.STRING,
       allowNull: false
     }
-  }, {
-    sequelize,
-    underscored: true,
-    modelName: 'drink'
-  });
+  }, { ...defaultModelOptions, modelName: 'drink' });
 
   // ---
   class Pour extends Model {}
@@ -85,11 +72,7 @@ exports.init = function init(sequelize) {
       type: Sequelize.FLOAT,
       allowNull: false
     }
-  }, {
-    sequelize,
-    underscored: true,
-    modelName: 'pour'
-  });
+  }, { ...defaultModelOptions, modelName: 'pour' });
 
   // ---
   class Pin extends Model {}
@@ -100,31 +83,33 @@ exports.init = function init(sequelize) {
       allowNull: false,
       unique: true
     }
-  }, {
-    sequelize,
-    underscored: true,
-    modelName: 'pin'
-  });
+  }, { ...defaultModelOptions, modelName: 'pin' });
 
 
 
   // - - - - - - - - - - -
+  //
+  // NOTE: when defining new associations, make sure to define
+  //       the `foreignKey` field. This is a known bug in sequilize
+  //       (they don't respect the `underscored: true` setting.
+  //
+  // - - - - - - - - - - -
 
-  Device.belongsTo(DeviceType);
+  Device.belongsTo(DeviceType, { foreignKey: 'device_type_id' });
 
-  Bottle.belongsTo(Device);
+  Bottle.belongsTo(Device,  { foreignKey: 'device_id' });
 
-  Pour.belongsToMany(Drink, { through: 'drink_pour' });
-  Drink.belongsToMany(Pour, { through: 'drink_pour' });
+  Pour.belongsToMany(Drink, { through: 'drink_pour', foreignKey: 'drink_id' });
+  Drink.belongsToMany(Pour, { through: 'drink_pour', foreignKey: 'pour_id' });
 
-  Pour.belongsTo(Bottle);
+  Pour.belongsTo(Bottle, { foreignKey: 'bottle_id' });
 
   // device this pin belongs to
-  Pin.belongsTo(Device, {as: 'Device', foreignKey: 'device_id'});
+  Pin.belongsTo(Device, { as: 'Device', foreignKey: 'device_id' });
   // what device is attached to the pin?
-  Pin.belongsTo(Device, {as: 'AttachedDevice', foreignKey: 'attached_device_id'});
+  Pin.belongsTo(Device, { as: 'AttachedDevice', foreignKey: 'attached_device_id' });
   // what action does this device perform?
-  Pin.belongsTo(DeviceAction);
+  Pin.belongsTo(DeviceAction, { foreignKey: 'device_action_id' });
 
   // - - - - - - - - - - -
   return {
