@@ -132,8 +132,8 @@ module.exports.up = function (next) {
 
       const pi_pin_40 = await Pin.create({
         physical_pin_number: 40,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_spicedRum.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_spicedRum.get('id'),
         device_action_id: action_blow.get('id')
       });
 
@@ -142,32 +142,32 @@ module.exports.up = function (next) {
       // [pin=38]
       const pi_pin_38 = await Pin.create({
         physical_pin_number: 38,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_gin.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_gin.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=37]
       const pi_pin_37 = await Pin.create({
         physical_pin_number: 37,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_bourbon.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_bourbon.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=36]
       const pi_pin_36 = await Pin.create({
         physical_pin_number: 36,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_vodka.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_vodka.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=35]
       const pi_pin_35 = await Pin.create({
         physical_pin_number: 35,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_lemonLime.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_lemonLime.get('id'),
         device_action_id: action_blow.get('id')
       });
 
@@ -176,24 +176,24 @@ module.exports.up = function (next) {
       // [pin=33]
       const pi_pin_33 = await Pin.create({
         physical_pin_number: 33,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_scotch.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_scotch.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=32]
       const pi_pin_32 = await Pin.create({
         physical_pin_number: 32,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_irishWhisky.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_irishWhisky.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=31]
       const pi_pin_31 = await Pin.create({
         physical_pin_number: 31,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_cranberry.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_cranberry.get('id'),
         device_action_id: action_blow.get('id')
       });
 
@@ -202,8 +202,8 @@ module.exports.up = function (next) {
       // [pin=29]
       const pi_pin_29 = await Pin.create({
         physical_pin_number: 29,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_coffeeLiquor.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_coffeeLiquor.get('id'),
         device_action_id: action_blow.get('id')
       });
 
@@ -214,8 +214,8 @@ module.exports.up = function (next) {
       // [pin=26]
       const pi_pin_26 = await Pin.create({
         physical_pin_number: 26,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_a_Undefined.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_a_Undefined.get('id'),
         device_action_id: action_blow.get('id')
       });
 
@@ -224,32 +224,32 @@ module.exports.up = function (next) {
       // [pin=24]
       const pi_pin_24 = await Pin.create({
         physical_pin_number: 24,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_b_Undefined.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_b_Undefined.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=23]
       const pi_pin_23 = await Pin.create({
         physical_pin_number: 23,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_c_Undefined.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_c_Undefined.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=22]
       const pi_pin_22 = await Pin.create({
         physical_pin_number: 22,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_d_Undefined.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_d_Undefined.get('id'),
         device_action_id: action_blow.get('id')
       });
 
       // [pin=21]
       const pi_pin_21 = await Pin.create({
         physical_pin_number: 21,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_tequila.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_tequila.get('id'),
         device_action_id: action_blow.get('id')
       });
 
@@ -258,16 +258,16 @@ module.exports.up = function (next) {
       // [pin=19]
       const pi_pin_19 = await Pin.create({
         physical_pin_number: 19,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_coke.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_coke.get('id'),
         device_action_id: action_pumpForward.get('id')
       });
 
       // [pin=18]
       const pi_pin_18 = await Pin.create({
         physical_pin_number: 18,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_coke.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_coke.get('id'),
         device_action_id: action_pumpReverse.get('id')
       });
 
@@ -276,16 +276,16 @@ module.exports.up = function (next) {
       // [pin=16]
       const pi_pin_16 = await Pin.create({
         physical_pin_number: 16,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_gingerAle.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_gingerAle.get('id'),
         device_action_id: action_pumpForward.get('id')
       });
 
       // [pin=15]
       const pi_pin_15 = await Pin.create({
         physical_pin_number: 15,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_gingerAle.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_gingerAle.get('id'),
         device_action_id: action_pumpReverse.get('id')
       });
 
@@ -294,32 +294,32 @@ module.exports.up = function (next) {
       // [pin=13]
       const pi_pin_13 = await Pin.create({
         physical_pin_number: 13,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_tonic.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_tonic.get('id'),
         device_action_id: action_pumpForward.get('id')
       });
 
       // [pin=12]
       const pi_pin_12 = await Pin.create({
         physical_pin_number: 12,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_tonic.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_tonic.get('id'),
         device_action_id: action_pumpReverse.get('id')
       });
 
       // [pin=11]
       const pi_pin_11 = await Pin.create({
         physical_pin_number: 11,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_e_Undefined.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_e_Undefined.get('id'),
         device_action_id: action_pumpForward.get('id')
       });
 
       // [pin=10]
       const pi_pin_10 = await Pin.create({
         physical_pin_number: 10,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_e_Undefined.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_e_Undefined.get('id'),
         device_action_id: action_pumpReverse.get('id')
       });
 
@@ -328,8 +328,8 @@ module.exports.up = function (next) {
       // [pin=8]
       const pi_pin_8 = await Pin.create({
         physical_pin_number: 8,
-        device_id: device_pi.get('id'),
-        attached_device_id: device_strawDispenser.get('id'),
+        controller_id: device_pi.get('id'),
+        device_id: device_strawDispenser.get('id'),
         device_action_id: action_dispense.get('id')
       });
 

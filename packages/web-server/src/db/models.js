@@ -105,6 +105,8 @@ exports.init = function init(sequelize) {
   // - - - - - - - - - - -
 
   Device.belongsTo(DeviceType, { foreignKey: 'device_type_id' });
+  Device.hasMany(Pin, { foreignKey: 'device_id' });
+
 
   Bottle.belongsTo(Device,  { foreignKey: 'device_id' });
 
@@ -114,9 +116,7 @@ exports.init = function init(sequelize) {
   Pour.belongsTo(Bottle, { foreignKey: 'bottle_id' });
 
   // device this pin belongs to
-  Pin.belongsTo(Device, { as: 'Device', foreignKey: 'device_id' });
-  // what device is attached to the pin?
-  Pin.belongsTo(Device, { as: 'AttachedDevice', foreignKey: 'attached_device_id' });
+  Pin.belongsTo(Device, { as: 'Controller', foreignKey: 'controller_id' });
   // what action does this device perform?
   Pin.belongsTo(DeviceAction, { foreignKey: 'device_action_id' });
 
