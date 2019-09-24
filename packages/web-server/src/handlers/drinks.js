@@ -16,7 +16,7 @@ exports.get = (db) => async (req, res) => {
   }
 
   try {
-    const drink = await db.drink.getByIdWithPours(id);
+    const drink = await db.drink.getByIdWithEverything(id);
 
     if (!drink) {
       res.status(404).json({ error: 'drink not found' });
