@@ -35,6 +35,9 @@ exports.getByIdWithEverything = (models, id) =>
                 model: models.Device,
                 include: [
                   {
+                    model: models.DeviceType
+                  },
+                  {
                     model: models.Pin,
                     include: [
                       {
