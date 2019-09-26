@@ -1,7 +1,7 @@
 izac
 ================================================================================
 
-> Ultra proprietary codebase for barbot.
+> Open source repository for iZac, the NoiseBridge Barbot.
 
 Requirements
 --------------------------------------------------
