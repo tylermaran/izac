@@ -1,0 +1,23 @@
+put a location/date/time/whatever. append-only log. use
+"git blame" or whatever to see who wrote the entry. that
+should be easy huh?
+
+. . .
+2019-09-25 @ 18:34:41 PDT (San Fran)
+
+Just got hit by a car on my way to nb. was on the
+hood and everything lol. scuffed up the bottom of
+my wrist a bit, which, will make tonight's coding
+session a bit, uh, rough?
+
+thankfully my longboard isn't busted considering it
+just got fixed yesterday, but the turning on it is
+a bit looser. I'll bring it into the shop with some
+chocolate for the dude who fixed it up for me... I
+think their name was Adrian?
+
+but yeah, uh. folks during rush hour are wild & run
+lights. I'll be more cautious from the line. the board
+jumps now that adrian enabled "turbo mode" lmao.
+
+bye.
