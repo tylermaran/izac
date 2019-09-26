@@ -23,6 +23,10 @@ exports.firePin = (pinServerPort, pin, ms, output) => new Promise((resolve, reje
       sleep_ms: ms
     }
   }, (error, response, body) => {
+    if (error) {
+      return reject(error);
+    }
+
     return response.statusCode !== 204 ? reject() : resolve();
   });
 });
