@@ -13,11 +13,11 @@ exports.fire = (pinServerPort, pin, ms, output) => new Promise((resolve, reject)
   });
 });
 
-exports.off_then_on = (pinServerPort, pin, ms) =>
-  exports.fire(pinServerPort, pin, ms, 0);
+exports.low_then_high = (pinServerPort, pin, ms) =>
+  exports.firePin(pinServerPort, pin, ms, 0);
 
-exports.on_then_off = (pinServerPort, pin, ms) =>
-  exports.fire(pinServerPort, pin, ms, 1);
+exports.high_then_low = (pinServerPort, pin, ms) =>
+  exports.firePin(pinServerPort, pin, ms, 1);
 
 exports.dispenseStraw = (pinForStrawDispenser) => {
   return Promise.resolve(); // @TODO
