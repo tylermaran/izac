@@ -7,6 +7,13 @@ const DEVICE_TYPES = exports.DEVICE_TYPES = {
   RASPBERRY_PI_4B: "raspberry_pi_4b"
 };
 
+const DEVICE_ACTIONS = exports.DEVICE_ACTIONS = {
+  BLOW: "blow",
+  PUMP_FORWARD: "pump_forward",
+  PUMP_REVERSE: "pump_reverse",
+  DISPENSE: "dispense"
+};
+
 exports.firePin = (pinServerPort, pin, ms, output) => new Promise((resolve, reject) => {
   request({
     method: "POST",

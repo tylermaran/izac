@@ -1,7 +1,7 @@
 const path = require('path');
 const Database = require('../src/db');
 const config = require('../config');
-const { DEVICE_TYPES } = require('../src/robots');
+const { DEVICE_TYPES, DEVICE_ACTIONS } = require('../src/robots');
 
 const db = new Database(config.sqlite3.filename);
 
@@ -36,10 +36,18 @@ module.exports.up = function (next) {
       // ---------------------------------------------------------------
       // >>>> device actions
       //
-      const action_blow = await DeviceAction.create({ name: 'blow' });
-      const action_pumpForward = await DeviceAction.create({ name: 'pump_forward' });
-      const action_pumpReverse = await DeviceAction.create({ name: 'pump_reverse' });
-      const action_dispense = await DeviceAction.create({ name: 'dispense' });
+      const action_blow = await DeviceAction.create({
+        name: DEVICE_ACTIONS.BLOW
+      });
+      const action_pumpForward = await DeviceAction.create({
+        name: DEVICE_ACTIONS.PUMP_FORWARD
+      });
+      const action_pumpReverse = await DeviceAction.create({
+        name: DEVICE_ACTIONS.PUMP_REVERSE
+      });
+      const action_dispense = await DeviceAction.create({
+        name: DEVICE_ACTIONS.DISPENSE
+      });
 
       // ---------------------------------------------------------------
       // >>> devices
