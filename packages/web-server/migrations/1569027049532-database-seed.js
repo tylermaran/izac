@@ -1,6 +1,7 @@
 const path = require('path');
 const Database = require('../src/db');
 const config = require('../config');
+const { DEVICE_TYPES } = require('../src/robots');
 
 const db = new Database(config.sqlite3.filename);
 
@@ -19,10 +20,18 @@ module.exports.up = function (next) {
       // ---------------------------------------------------------------
       // >>>> device types
       //
-      const type_pi = await DeviceType.create({ name: 'raspberry_pi_4b' });
-      const type_periPump = await DeviceType.create({ name: 'peristaltic_pump' });
-      const type_airPump = await DeviceType.create({ name: 'air_pump' });
-      const type_strawDispenser = await DeviceType.create({ name: 'straw_dispenser' });
+      const type_pi = await DeviceType.create({
+        name: DEVICE_TYPES.RASPBERRY_PI_4B
+      });
+      const type_periPump = await DeviceType.create({
+        name: DEVICE_TYPES.PERISTALTIC_PUMP
+      });
+      const type_airPump = await DeviceType.create({
+        name: DEVICE_TYPES.AIR_PUMP
+      });
+      const type_strawDispenser = await DeviceType.create({
+        name: DEVICE_TYPES.STRAW_DISPENSER
+      });
 
       // ---------------------------------------------------------------
       // >>>> device actions

@@ -1,6 +1,13 @@
 const request = require('request');
 
-exports.fire = (pinServerPort, pin, ms, output) => new Promise((resolve, reject) => {
+const DEVICE_TYPES = exports.DEVICE_TYPES = {
+  AIR_PUMP: "air_pump",
+  PERISTALTIC_PUMP: "peristaltic_pump",
+  STRAW_DISPENSER: "straw_dispenser",
+  RASPBERRY_PI_4B: "raspberry_pi_4b"
+};
+
+exports.firePin = (pinServerPort, pin, ms, output) => new Promise((resolve, reject) => {
   request({
     method: "POST",
     uri: `http://localhost:${pinServerPort}/pins/${pin}/fire`,
