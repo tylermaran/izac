@@ -21,5 +21,4 @@ exports.high_then_low = (pinServerPort, pin, ms) =>
 
 exports.dispenseStraw = (pinForStrawDispenser) => {
   return Promise.resolve(); // @TODO
-  // return exports.on_then_off(pinForStrawDispenser, 10000);
 }
