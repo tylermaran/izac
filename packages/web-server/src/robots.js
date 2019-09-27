@@ -1,6 +1,20 @@
 const request = require('request');
 
-exports.fire = (pinServerPort, pin, ms, output) => new Promise((resolve, reject) => {
+const DEVICE_TYPES = exports.DEVICE_TYPES = {
+  AIR_PUMP: "air_pump",
+  PERISTALTIC_PUMP: "peristaltic_pump",
+  STRAW_DISPENSER: "straw_dispenser",
+  RASPBERRY_PI_4B: "raspberry_pi_4b"
+};
+
+const DEVICE_ACTIONS = exports.DEVICE_ACTIONS = {
+  BLOW: "blow",
+  PUMP_FORWARD: "pump_forward",
+  PUMP_REVERSE: "pump_reverse",
+  DISPENSE: "dispense"
+};
+
+exports.firePin = (pinServerPort, pin, ms, output) => new Promise((resolve, reject) => {
   request({
     method: "POST",
     uri: `http://localhost:${pinServerPort}/pins/${pin}/fire`,
@@ -9,17 +23,20 @@ exports.fire = (pinServerPort, pin, ms, output) => new Promise((resolve, reject)
       sleep_ms: ms
     }
   }, (error, response, body) => {
+    if (error) {
+      return reject(error);
+    }
+
     return response.statusCode !== 204 ? reject() : resolve();
   });
 });
 
-exports.off_then_on = (pinServerPort, pin, ms) =>
-  exports.fire(pinServerPort, pin, ms, 0);
+exports.low_then_high = (pinServerPort, pin, ms) =>
+  exports.firePin(pinServerPort, pin, ms, 0);
 
-exports.on_then_off = (pinServerPort, pin, ms) =>
-  exports.fire(pinServerPort, pin, ms, 1);
+exports.high_then_low = (pinServerPort, pin, ms) =>
+  exports.firePin(pinServerPort, pin, ms, 1);
 
 exports.dispenseStraw = (pinForStrawDispenser) => {
   return Promise.resolve(); // @TODO
-  // return exports.on_then_off(pinForStrawDispenser, 10000);
 }

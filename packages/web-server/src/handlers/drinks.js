@@ -1,6 +1,7 @@
 // const rpio = require('rpio');
 const bottles = require('./bottles');
 const robots = require('../robots');
+const { DEVICE_TYPES, DEVICE_ACTIONS } = require('../robots');
 
 exports.get = (db) => async (req, res) => {
   const invalidations = [];
@@ -16,28 +17,14 @@ exports.get = (db) => async (req, res) => {
   }
 
   try {
-    const drink = await db.drink.getById(id);
+    const drink = await db.drink.getByIdWithEverything(id);
 
     if (!drink) {
       res.status(404).json({ error: 'drink not found' });
       return;
     }
 
-    const pours = await db.drink_pour.getPoursForDrink(drink.id);
-    if (!pours) {
-      res.status(404).json({ error: `pours for drink ${drink.id} not found` });
-      return;
-    }
-
-    res.status(200).json({
-      id: drink.id,
-      name: drink.name,
-      pours: pours.map(pour => ({
-        bottle_id: pour.bottle_id,
-        liters: pour.liters
-      }))
-    });
-
+    res.status(200).json(drink);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
     res.status(500).json({ id, error: "internal server error" });
@@ -47,86 +34,14 @@ exports.get = (db) => async (req, res) => {
 
 exports.getAll = (db) => async (req, res) => {
   try {
-    const data = {
-      drinks: []
-    };
-
-    const drinks = await db.drink.getAll();
+    const drinks = await db.drink.getAllWithPours();
 
     if (!drinks) {
       res.status(404).json({ error: 'no drinks not found' });
       return;
     }
 
-    for (let i = 0; i < drinks.length; i++) {
-      const drink = drinks[i];
-
-      const pours = await db.drink_pour.getPoursForDrink(drink.id);
-      if (!pours) {
-        res.status(404).json({
-          error: `pours for drink (id=${drink.id}) not found`
-        });
-        return;
-      }
-
-      const entry = Object.assign({}, drink, {
-        pours: pours.map(pour => ({
-          bottle_id: pour.bottle_id,
-          liters: pour.liters
-        }))
-      });
-
-      data.drinks.push(entry);
-    }
-
-    res.status(200).json(data);
-
-  } catch (error) {
-    const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
-    res.status(500).json({ id, error: "internal server error" });
-    console.error(id, error);
-  }
-};
-
-exports.add = (db) => async (req, res) => {
-  const invalidations = [];
-  const { name, pours } = req.body;
-
-  if (typeof name !== 'string') {
-    invalidations.push("name isn't of type string");
-  }
-
-  if (!(pours instanceof Array)) {
-    invalidations.push('pours is not an array');
-  } else {
-    pours.forEach(pour => {
-      if (typeof pour.bottle_id !== 'number') {
-        invalidations.push("pour is missing a bottle id");
-      }
-      if (typeof pour.liters !== 'number') {
-        invalidations.push("pour is missing a liters amount");
-      }
-    });
-  }
-
-  if (invalidations.length > 0) {
-    res.status(400).json({ errors: invalidations });
-    return;
-  }
-
-  try {
-    const add_result = await db.drink.add(name, pours);
-    const drink_id = add_result.drink_statement.lastID;
-    const drink = await db.drink.getById(drink_id);
-    const db_pours = await db.drink_pour.getPoursForDrink(drink.id);
-
-    res.status(200).json(Object.assign({}, drink, {
-      pours: db_pours.map(pour => ({
-        bottle_id: pour.bottle_id,
-        liters: pour.liters
-      }))
-    }));
-
+    res.status(200).json(drinks);
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
     res.status(500).json({ id, error: "internal server error" });
@@ -210,9 +125,7 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
 exports.pour = (db, pinServerPort) => async (req, res) => {
 
   const invalidations = [];
-  const {
-    id // drink_id
-  } = req.params;
+  const { id } = req.params;
 
   if (typeof id !== 'string') {
     invalidations.push('missing required parameter id');
@@ -224,152 +137,87 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
   }
 
   try {
-    const drink = await db.drink.getById(id);
+    const drink = await db.drink.getByIdWithEverything(id);
+
     if (!drink) {
       res.status(404).json({ error: 'drink not found' });
       return;
     }
 
-    console.log('drink: ', drink);
-
-    const pours = await db.drink_pour.getPoursForDrink(id);
-    if (pours.length <= 0) {
-      res.status(404).json({
-        error: 'pours for drink (id=${drink.id}) not found'
-      });
-      return;
-    }
-
-    const robotPours = [];
-
-    for (let i = 0; i < pours.length; i++) {
-      const pour = pours[i];
-      const bottle = await db.bottle.getById(pour.bottle_id);
-
-      console.log('>> bottle:', bottle)
-
-      const device = await db.device.getByBottleID(bottle.id);
-
-      console.log('>> device:', device);
-
-      const device_type = await db.device_type.getById(device.device_type_id);
-      const pins = await db.pin.getAllForAttachedDevice(device.id);
-      const device_actions = [];
-
-      for (let i = 0; i < pins.length; i++) {
-        device_actions.push(await db.device_action.getById(pins[i].device_action_id));
+    // reject any pours where the bottle fill is <= 5%
+    for (pour of drink.pours) {
+      if (pour.bottle.fill <= 0.05) {
+        res.status(400).json({
+          errors: [
+            'not enough liquid for this drink',
+            `bottle: ${pour.bottle.name}`
+          ]
+        });
+        return;
       }
-
-      const new_bottle_liters = bottle.current_liters - pour.liters;
-
-      await db.bottle.setBottleLevel(bottle.id, new_bottle_liters);
-
-      robotPours.push({ pour, bottle, device, device_type, device_actions, pins });
     }
 
-    console.log(JSON.stringify(robotPours, null, 4));
+    // map over each bottle pour, and return a promise that represents
+    // a single bottle pour for the overall drink.
+    const bottlePours = drink.pours.map((pour) => {
+      // action promises that must be resolved for a single bottle pour.
+      const pendingActions = [];
 
-    await Promise.all([
-      // of course, all drinks get a straw
-      //
-      // @TODO remove this lmao
-      //
-      robots.dispenseStraw(8).then(() => {
-        console.log('finished dispensing straw');
-      }),
+      const bottle = pour.bottle;
+      const { device_type, pins } = bottle.device;
 
-    ].concat(robotPours.map(roboPour => { // construct all pours
+      // the current bottle level in liters.
+      const currentLiters = bottle.max_liters * bottle.fill;
+      // new bottle fill level = (new bottle level after pour) / max_liters
+      const newFill = (currentLiters - pour.liters) / bottle.max_liters;
 
-      const { pour, bottle, device, device_type, device_actions, pins } = roboPour;
-
-      let pour_duration_ms, pin;
+      // set the new bottle level accordingly
+      pendingActions.push(db.bottle.setBottleFill(bottle.id, newFill));
 
       switch (device_type.name) {
-        case 'air_pump':
-          pour_duration_ms = get_air_bottle_pour_duration(
-            pour.liters, bottle.current_liters, bottle.max_liters);
+        case DEVICE_TYPES.AIR_PUMP: {
+          const pin = pins[0]; // air pumps only have one pin
+          const durMs = get_air_bottle_pour_duration(
+            pour.liters, currentLiters, bottle.max_liters);
 
-          const pin = pins[0].physical_pin_number;
+          console.log(`air, pin=${pin}, dur=${durMs}, bottle=${bottle.name}`);
+          pendingActions.push(robots.low_then_high(pinServerPort,
+                                                   pin.physical_pin_number,
+                                                   durMs));
 
-          console.log(
-            `(air, pin=${pin}, duration=${pour_duration_ms}) pouring '${bottle.name}'`);
+          break;
+        }
+        case DEVICE_TYPES.PERISTALTIC_PUMP: {
+          const durMs = get_peristaltic_bottle_pour_duration(pour.liters);
+          const forwardPin = pins.find(p =>
+            p.device_action.name === DEVICE_ACTIONS.PUMP_FORWARD);
+          const reversePin = pins.find(p =>
+            p.device_action.name === DEVICE_ACTIONS.PUMP_REVERSE);
 
-          console.log('air:::firing');
-
-          return robots.off_then_on(pinServerPort, pin, pour_duration_ms).then(() => {
-            console.log('air:::done!');
-          });
-
-        case 'peristaltic_pump':
-          pour_duration_ms = get_peristaltic_bottle_pour_duration(pour.liters);
-
-          const forwardPin = (function() {
-            let action_id;
-            for (let x = 0; x < device_actions.length; x++) {
-              if (device_actions[x].name === 'pump_forward') {
-                action_id = device_actions[x].id;
-                break;
-              }
-            }
-
-            let physical_pin_number;
-            for (let y = 0; y < pins.length; y++) {
-              if (pins[y].device_action_id === action_id) {
-                physical_pin_number = pins[y].physical_pin_number;
-              }
-            }
-
-            return physical_pin_number;
-          })();
-
-          const reversePin = (function() {
-            let action_id;
-            for (let x = 0; x < device_actions.length; x++) {
-              if (device_actions[x].name === 'pump_reverse') {
-                action_id = device_actions[x].id;
-                break;
-              }
-            }
-
-            let physical_pin_number;
-            for (let y = 0; y < pins.length; y++) {
-              if (pins[y].device_action_id === action_id) {
-                physical_pin_number = pins[y].physical_pin_number;
-              }
-            }
-
-            return physical_pin_number;
-          })();
-
-          console.log(
-            `(peri, pin_f=${forwardPin}, pin_r=${reversePin},
-              duration=${pour_duration_ms}, pouring='${bottle.name}'
-            `);
-
-
-          console.log(`peri:::firing forward pin ${forwardPin}`);
-          // fire the pump in the forward direction
-          return robots.off_then_on(pinServerPort, forwardPin, pour_duration_ms).then(() => {
-            console.log('peri:::done w/ forward!');
-            // suck it all back with a 100ms buffer
-
+          pendingActions.push(robots.low_then_high(
+            pinServerPort,
+            forwardPin.physical_pin_number,
+            durMs
+          ).then(() => {
             return new Promise((resolve) => setTimeout(resolve, 500));
-
           }).then(() => {
-            console.log(`peri:::firing reverse pin ${reversePin}`);
-            return robots.off_then_on(pinServerPort, reversePin, (pour_duration_ms)).then(() => {
-              console.log('peri:::done w/ reverse!');
-            });
-          });
-      }
-    })));
+            return robots.low_then_high(pinServerPort,
+                                        reversePin.physical_pin_number,
+                                        durMs);
+          }));
 
-    res.status(200).json(Object.assign({}, drink, {
-      pours: pours.map(pour => ({
-        bottle_id: pour.bottle_id,
-        liters: pour.liters
-      }))
-    }));
+          break;
+        }
+      }
+
+      return Promise.all(pendingActions).then(() => {
+        console.log(`finished pouring ${bottle.name}`);
+      });
+    });
+
+    await Promise.all(bottlePours);
+
+    res.status(200).json(await db.drink.getByIdWithEverything(id));
 
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;

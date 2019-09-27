@@ -1,31 +1,39 @@
-const sqlite3 = require('sqlite3');
+const Sequelize = require('sequelize');
+const { init } = require('./models');
 
 module.exports = class Database {
   constructor(sqlite3_db_filepath) {
-    const sqlite3_db = new sqlite3.Database(sqlite3_db_filepath);
 
-    // The cryptic code below creates closures that apply our sqlite3
-    // connection to all database module functions. This cleans up
-    // our External API so we don't have to pass along a sqlite3 conn
-    // for every call!
-
-    [
-      'device_type', 'device_action', 'device', 'pin',
-      'bottle',
-      'drink', 'drink_pour',
-    ].forEach(module_name => {
-      const mod = require(`./${module_name}`);
-
-      Object.keys(mod).forEach((key) => {
-        if (typeof this[module_name] === 'undefined') {
-          this[module_name] = {};
-        }
-
-        this[module_name][key] = function () {
-          return mod[key].apply(null, [ sqlite3_db, ...arguments ]);
-        };
-      });
+    const sequelize = new Sequelize({
+      dialect: 'sqlite',
+      storage: sqlite3_db_filepath
     });
+
+    this.__sequelize = sequelize;
+
+    const models = init(sequelize);
+
+    this.models = models;
+
+    const dbModuleNames = [ 'bottle', 'drink' ];
+
+    // The cryptic code below creates closures that apply our sequelize
+    // instance to all db modules. This cleans up our External (public)
+    // API so we don't have to pass sequelize for every call.
+    for (let moduleName of dbModuleNames) {
+      const mod = require(`./${moduleName}`);
+
+      this[moduleName] = {};
+
+      for (let key in mod) {
+        this[moduleName][key] = function () {
+          return mod[key].apply(null, [ models, ...arguments ]);
+        };
+      }
+    }
   }
 
+  __sync(options) {
+    return this.__sequelize.sync(options);
+  }
 }

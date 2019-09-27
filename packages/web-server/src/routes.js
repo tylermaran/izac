@@ -5,18 +5,14 @@ const handlers = require('./handlers');
 exports.configureRoutes = function configureRoutes(app, clientDir, pinServerPort, db) {
   // Server routes (take priority over client routing).
   app.get('/bottles', handlers.bottles.getAll(db));
-  app.post('/bottles', handlers.bottles.add(db));
   app.get('/bottles/:id', handlers.bottles.get(db));
   app.post('/bottles/:id/refill', handlers.bottles.refill(db));
 
   app.get('/drinks', handlers.drinks.getAll(db));
   app.get('/drinks/:id', handlers.drinks.get(db));
-  app.post('/drinks', handlers.drinks.add(db));
   app.post('/drinks/:id/pour', handlers.drinks.pour(db, pinServerPort));
 
   app.post('/admin/pins/:pin/fire', handlers.admin.pins.fire(pinServerPort));
-  app.post('/admin/database/init', handlers.admin.database.init(db));
-  app.post('/admin/database/drop', handlers.admin.database.drop(db));
 
   // We only concern ourselves with client routes when we're
   // serving up a generated bundle in production.

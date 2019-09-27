@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "backend for barbot",
   "scripts": {
-    "start": "WEB_SERVER_PORT=5000 PIN_SERVER_PORT=5001 nodemon bin/start.js",
+    "start": "DATA_DIR=. WEB_SERVER_PORT=5000 PIN_SERVER_PORT=5001 nodemon bin/start.js",
     "prod": "node bin/start.js",
     "test": "tap"
   },
@@ -12,6 +12,8 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "migrate": "^1.6.2",
+    "sequelize": "^5.19.0",
     "sqlite3": "^4.0.9"
   },
   "keywords": [],
