@@ -3,68 +3,36 @@
 const path = require('path');
 const fs = require('fs');
 
-const API = require('barbot-api');
-
 const tap = require('tap');
 const request = require('request');
 
+const API = require('barbot-api');
 const Server = require('../src/server');
+const config = require('../config');
+
+const seed = require('../src/db/admin/seed');
+const drop = require('../src/db/admin/drop');
+
+
 
 // ---
 
-const cwd = process.cwd(); // store all files we create in the cwd.
-
 let server;
-
-const serverConfig = {
-  port: process.env.PORT || 7357, // 7357 P0R7
-  cors: {
-    origin: true,
-    credentials: true,
-    allowedHeaders: ['Content-Type']
-  },
-  sqlite3: {
-    filename: process.env.SQLITE3_DB_PATH || path.join(cwd, 'test.db.sqlite3')
-  },
-  client: {
-    // @TODO:
-    //
-    // Not strictly used for tests at the moment. When we start doing UI
-    // tests / etc. we will want to change this so we can "render" the
-    // react views.
-    //
-    baseDir: path.join(__dirname)
-  }
-};
-
-const baseURL = `http://localhost:${serverConfig.port}`;
-
+const baseURL = `http://localhost:${config.port}`;
 const api = new API(baseURL);
 
 // ---
 
-tap.only('start test server', async () => {
-  try {  fs.unlinkSync(serverConfig.sqlite3.filename); } catch(e) {}
 
-  server = new Server(serverConfig);
+tap.only('start test server', async () => {
+  try {  fs.unlinkSync(config.sqlite3.filename); } catch(e) {}
+
+  server = new Server(config);
+
+  await drop(server.db);
+  await seed(server.db);
 
   await server.start();
-});
-
-tap.beforeEach(async () => {
-  await new Promise(r => request({
-    method: 'POST',
-    uri: `${baseURL}/admin/database/drop`
-  }, (err, res, body) => {
-    r();
-  }));
-
-  await new Promise(r => request({
-    method: 'POST',
-    uri: `${baseURL}/admin/database/init`
-  }, (err, res, body) => {
-    r();
-  }));
 });
 
 tap.teardown(() => {
@@ -79,74 +47,62 @@ tap.teardown(() => {
 
 tap.test('GET /bottles', async (t) => {
   const data = await api.bottle.list();
+
   t.match(Object.keys(data).length, 1);
   t.match(data.bottles instanceof Array, true);
 
   const firstBottle = data.bottles[0];
-  t.match(Object.keys(firstBottle).length, 5);
+  t.match(Object.keys(firstBottle).length, 7);
   t.match(typeof firstBottle.id, 'number');
   t.match(typeof firstBottle.name, 'string');
   t.match(typeof firstBottle.max_liters, 'number');
-  t.match(typeof firstBottle.current_liters, 'number');
-  t.match(typeof firstBottle.attached_device_id, 'number');
+  t.match(typeof firstBottle.fill, 'number');
+  t.match(typeof firstBottle.device_id, 'number');
+  t.match(typeof firstBottle.created_at, 'string');
+  t.match(typeof firstBottle.updated_at, 'string');
 });
 
 tap.test('GET /bottles/:id', async (t) => {
   const data = await api.bottle.one(1);
-  t.match(Object.keys(data).length, 5);
+  t.match(Object.keys(data).length, 7);
   t.match(typeof data.id, 'number');
   t.match(typeof data.name, 'string');
   t.match(typeof data.max_liters, 'number');
-  t.match(typeof data.current_liters, 'number');
-  t.match(typeof data.attached_device_id, 'number');
-});
-
-tap.test('POST /bottles', async (t) => {
-  const data = await api.bottle.add('jayskie', 2, 1);
-  t.match(Object.keys(data).length, 5);
-  t.match(typeof data.id, 'number');
-  t.match(typeof data.name, 'string');
-  t.match(typeof data.max_liters, 'number');
-  t.match(typeof data.current_liters, 'number');
-  t.match(data.attached_device_id, 1);
+  t.match(typeof data.fill, 'number');
+  t.match(typeof data.device_id, 'number');
+  t.match(typeof data.created_at, 'string');
+  t.match(typeof data.updated_at, 'string');
 });
 
 tap.test('POST /bottles/:id/refill', async (t) => {
+  const drink = await api.drink.one(1);
 
-  const MAX_LITERS = 2.0;
+  // grab the first bottle ID from this drink for this test.
+  const bottleId = drink.pours[0].bottle_id;
 
-  const bottle = await api.bottle.add(
-    'jayskie',  // bottle name
-    MAX_LITERS, // max liters for bottle
-    1           // attached device id
-  );
+  // start at a clean slate with this bottle
+  await api.bottle.refill(bottleId);
 
-  // refilling at this moment should be OK (noop).
-  const data = await api.bottle.refill(bottle.id);
+  // fetch the bottle from the database, and capture it's max liters
+  const bottle = await api.bottle.one(bottleId);
+  const maxLiters = bottle.max_liters;
 
-  t.match(Object.keys(data).length, 5);
-  t.match(typeof data.id, 'number');
-  t.match(typeof data.name, 'string');
-  t.match(typeof data.max_liters, 'number');
-  t.match(data.max_liters, MAX_LITERS);
-  t.match(typeof data.current_liters, 'number');
-  t.match(data.attached_device_id, 1);
+  // verify that our bottle fill level is "1"
+  //
+  // --> fill of "1" means the bottle is FULL, 0 = empty
+  //
+  t.match(bottle.fill, 1);
 
-  // ensure refill works on bottles we've drined a lil'
-  const newDrink = await api.drink.add('jayskie-club-mate', [
-    { bottle_id: bottle.id, liters: 0.5 } // "pour 0.5 liters from bottle
-  ]);
+  // pour out a lil' drink for our homies
+  await api.drink.pour(drink.id);
 
-  await api.drink.pour(newDrink.id);
+  const updatedBottle = await api.bottle.one(bottleId);
 
-  const updatedBottle = await api.bottle.one(bottle.id);
+  t.match(updatedBottle.fill < 1, true);
 
-  t.match(updatedBottle.max_liters !== updatedBottle.current_liters, true);
-  t.match(updatedBottle.max_liters - 0.5, updatedBottle.current_liters);
-
-  await api.bottle.refill(bottle.id);
-  const refilledBottle = await api.bottle.one(bottle.id);
-  t.match(refilledBottle.max_liters, refilledBottle.current_liters);
+  await api.bottle.refill(bottleId);
+  const refilledBottle = await api.bottle.one(bottleId);
+  t.match(refilledBottle.fill, 1);
 });
 
 
@@ -154,14 +110,14 @@ tap.test('POST /bottles/:id/refill', async (t) => {
 // Drinks
 //
 
-tap.test('GET /drinks', async (t) => {
+tap.only('GET /drinks', async (t) => {
   const data = await api.drink.list();
 
-  t.match(data.drinks.length, 8);
+  t.match(data.drinks.length, 20);
 
   for (let drink of data.drinks) {
 
-    t.match(Object.keys(drink).length, 3);
+    t.match(Object.keys(drink).length, 5);
 
     const { id, name, pours } = drink;
 
@@ -170,7 +126,9 @@ tap.test('GET /drinks', async (t) => {
     t.match(pours instanceof Array, true);
 
     for (let pour of pours) {
-      t.match(Object.keys(pour).length, 2);
+      t.match(Object.keys(pour).length, 7);
+
+
       t.match(typeof pour.bottle_id, 'number');
       t.match(typeof pour.liters, 'number');
     }
@@ -180,30 +138,13 @@ tap.test('GET /drinks', async (t) => {
 tap.test('GET /drinks/:id', async (t) => {
   const data = await api.drink.one(1);
 
-  t.match(Object.keys(data).length, 3);
+  t.match(Object.keys(data).length, 5);
   t.match(typeof data.id, 'number');
   t.match(typeof data.name, 'string');
   t.match(data.pours instanceof Array, true);
 
   for (let pour of data.pours) {
-    t.match(Object.keys(pour).length, 2);
-    t.match(typeof pour.bottle_id, 'number');
-    t.match(typeof pour.liters, 'number');
-  }
-});
-
-tap.test('POST /drinks', async (t) => {
-  const data = await api.drink.add('jayskie-club-mate', [
-    { bottle_id: 1, liters: 0.5 }
-  ]);
-
-  t.match(Object.keys(data).length, 3);
-  t.match(typeof data.id, 'number');
-  t.match(typeof data.name, 'string');
-  t.match(data.pours instanceof Array, true);
-
-  for (let pour of data.pours) {
-    t.match(Object.keys(pour).length, 2);
+    t.match(Object.keys(pour).length, 8);
     t.match(typeof pour.bottle_id, 'number');
     t.match(typeof pour.liters, 'number');
   }
@@ -211,37 +152,38 @@ tap.test('POST /drinks', async (t) => {
 
 tap.test('POST /drinks/:id/pour', async (t) => {
 
-  const bottleA = await api.bottle.one(1);
-  const bottleB = await api.bottle.one(2);
+  const drink = await api.drink.one(1);
 
-  t.match(bottleA.max_liters, bottleA.current_liters);
-  t.match(bottleB.max_liters, bottleB.current_liters);
+  // we're only concerned about ONE bottle in a drink for this test.
+  const pour = drink.pours[0];
 
-  const newDrink = await api.drink.add('jayskie-club-mate', [
-    { bottle_id: bottleA.id, liters: 0.5 },
-    { bottle_id: bottleB.id, liters: 0.25 }
-  ]);
+  // start at a clean slate with this bottle
+  await api.bottle.refill(pour.bottle_id);
 
-  const data = await api.drink.pour(newDrink.id);
+  // fetch the bottle from the database, and capture it's max liters
+  const bottle = await api.bottle.one(pour.bottle_id);
 
-  t.match(Object.keys(data).length, 3);
-  t.match(typeof data.id, 'number');
-  t.match(typeof data.name, 'string');
-  t.match(data.pours instanceof Array, true);
+  const maxLiters = bottle.max_liters;
 
-  for (let pour of data.pours) {
-    t.match(Object.keys(pour).length, 2);
-    t.match(typeof pour.bottle_id, 'number');
-    t.match(typeof pour.liters, 'number');
-  }
+  // verify that our bottle fill level is "1"
+  //
+  // --> fill of "1" means the bottle is FULL, 0 = empty
+  //
+  t.match(bottle.fill, 1);
 
-  // check that the bottle level decreased by the amount we've set
-  const pouredBottleA = await api.bottle.one(1);
-  const pouredBottleB = await api.bottle.one(2);
+  // pour out a lil' drink for our homies
+  await api.drink.pour(drink.id);
 
-  t.match(pouredBottleA.max_liters - 0.5,
-          pouredBottleA.current_liters);
+  // calculate what we think the new bottle fill level should be
+  // before asking what it is in the database :)
+  const newFillLevel = (bottle.max_liters - pour.liters) / bottle.max_liters;
 
-  t.match(pouredBottleB.max_liters - 0.25,
-          pouredBottleB.current_liters);
+  // ok ask now lol
+  const updatedBottle = await api.bottle.one(pour.bottle_id);
+
+  // assert that the bottle has been drained the amount specified
+  // in the pour (re-calculate the fill variable)
+
+  t.match(updatedBottle.fill, newFillLevel);
+
 });
