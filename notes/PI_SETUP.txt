@@ -11,7 +11,7 @@ $ cat ~/.ssh/id_rsa.pub | sudo tee /media/mmcblk0p2/home/pi/.ssh/authorized_keys
 $ sudo sed -i 's/raspberrypi/izac/g' /media/mmcblk0p2/etc/hosts # update hostsname in `/etc/hosts`
 # sudo sed -i 's/raspberrypi/izac/g' /media/mmcblk0p2/etc/hostname # update hostname in `/etc/hostname`
 $ pmount /dev/mmcblk0p1 # mount the boot partition
-$ touch /media/mmcblk0p1/ssh # create an empty `ssh` directory
+$ touch /media/mmcblk0p1/ssh # create an empty `ssh` file
 $ tee /media/mmcblk0p1/wpa_supplicant.conf <<EOF
 country=us
 update_config=1
