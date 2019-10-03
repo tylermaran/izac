@@ -5,7 +5,7 @@
   "scripts": {
     "start": "DATA_DIR=. WEB_SERVER_PORT=5000 PIN_SERVER_PORT=5001 nodemon bin/start.js",
     "prod": "node bin/start.js",
-    "test": "tap"
+    "test": "DATA_DIR=./test WEB_SERVER_PORT=7357 PIN_SERVER_PORT=7358 tap"
   },
   "dependencies": {
     "barbot-api": "0.0.0",

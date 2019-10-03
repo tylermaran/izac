@@ -41,7 +41,7 @@ exports.getAll = (db) => async (req, res) => {
       return;
     }
 
-    res.status(200).json(drinks);
+    res.status(200).json({ drinks });
   } catch (error) {
     const id = `${Date.now()}-${Math.round(Math.random() * 9999) + 1000}`;
     res.status(500).json({ id, error: "internal server error" });
