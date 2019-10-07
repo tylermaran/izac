@@ -30,3 +30,9 @@ lerna-debug.log
 
 /.vs
 .vs
+
+# ignore local machines migration state
+.migrate
+
+# ignore local database (if set in repo like this, else, meh lol)
+db.sqlite3

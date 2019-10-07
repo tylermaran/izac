@@ -4,9 +4,10 @@
   "description": "world's best bartending robot",
   "private": true,
   "scripts": {
-    "start": "./bin/dev.sh",
-    "build": "./bin/build.sh ./build",
-    "prod": "./bin/prod.sh ./build"
+    "bootstrap": "lerna bootstrap",
+    "start": "lerna run --parallel start",
+    "build": "lerna run --parallel build",
+    "prod": "NODE_ENV=production lerna run --parallel prod"
   },
   "repository": {
     "type": "git",

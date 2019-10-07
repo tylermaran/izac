@@ -1,6 +1,7 @@
 #!/usr/bin/env dash
 
-SCRIPT_PATH=`dirname "$0"`; SCRIPT_PATH=`eval "cd \"$SCRIPT_PATH\" && pwd"`
+SCRIPT_PATH=$(dirname "$0")
+SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
 
 ROOT="${SCRIPT_PATH}/../"
 
