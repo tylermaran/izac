@@ -1,5 +1,10 @@
 const path = require('path');
 
+if (!process.env.BUILD_DIR) {
+  console.error('you must set BUILD_DIR');
+  process.exit(1);
+}
+
 if (!process.env.DATA_DIR) {
   console.error('you must set DATA_DIR');
   process.exit(1);
@@ -17,14 +22,9 @@ module.exports = {
   },
   client: {
     react: {
-      baseDir: process.env.REACT_BUILD_DIR || (() => {
-        if (process.env.NODE_ENV === 'production') {
-          console.error('you must set REACT_BUILD_DIR');
-          process.exit(1);
-        }
-
-        return '/dev/null';
-      })()
+      baseDir: process.env.NODE_ENV === 'production' ? path.join(
+        process.env.BUILD_DIR, 'react-ui'
+      ) : '/dev/null'
     }
   },
   server: {

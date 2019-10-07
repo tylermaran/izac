@@ -1,13 +1,16 @@
 #!/usr/bin/env dash
 
 # why dash vs bash? because we aren't fancy that's why.
-# true shell scripting---
-# no bashisms here.
 
 # Get the current script path (like __dirname in Node.js).
 # tons of ways to do this. liked this one because it's POSIX
 SCRIPT_PATH=$(dirname "$0")
 SCRIPT_PATH=$(eval "cd \"$SCRIPT_PATH\" && pwd")
+
+if [ -z "${BUILD_DIR}" ]; then
+    echo "missing BUILD_DIR environment variable" >&2 # redirect to stderr
+    exit 1
+fi
 
 cleanup() {
     # clean up any previous builds if they exist
@@ -23,35 +26,10 @@ cleanup
 mkdir -p $BUILD_DIR # create the top-level build directoryv en
 BUILD_DIR=$(eval "cd \"$BUILD_DIR\" && pwd")
 
-if [ -z "${BUILD_DIR}" ]; then
-    echo "missing build directory (first argument)" >&2 # redirect to stderr
-    exit 1
-fi
-
 build_react_ui() {
-    # using "(" and ")" creates a subshell where you can do things
-    # like `cd` and when you exit the subshell, the cwd is reset to
-    # what it was previously among other things!
-    (
-        cd "${SCRIPT_PATH}/../packages/react-ui"
-        npm run build || {
-            cleanup
-            echo "react-ui build failed lol" >&2
-            exit 1
-        }
-
-        mkdir "${BUILD_DIR}/react-ui"
-
-        mv ./build/* "${BUILD_DIR}/react-ui"
-    )
 }
 
 build_web_server() {
-    (
-        cd "${SCRIPT_PATH}/../packages/web-server"
-        mkdir $BUILD_DIR/web-server
-        cp -r ./* $BUILD_DIR/web-server
-    )
 }
 
 build_barbot_api() {

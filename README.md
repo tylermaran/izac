@@ -3,10 +3,8 @@ izac
 
 > Open source repository for iZac, the NoiseBridge Barbot.
 
-Requirements
+Dependencies
 --------------------------------------------------
-
-### Runtime
 
   * Node.js (>= v8.15.1)
   * Python3 (>= 3.7.3)
@@ -15,20 +13,40 @@ Requirements
 [da]: https://en.wikipedia.org/wiki/Almquist_shell#dash:_Ubuntu,_Debian_and_POSIX_compliance_of_Linux_distributions
 
 
-Dev Setup
+Setup
 --------------------------------------------------
 
-### Tooling
+### 0. Configure `config.sh`
 
-On your local machine:
+In this top-level directory, there is a default "config.sh" script
+that you can modify as you wish.
+
+### 1. Bootstrap
 
 ```
 npm install
-npx lerna bootstrap
+npm run bootstrap
+```
+
+### 2. Start
+
+#### Development
+
+```
+source config.sh
 npm start
 ```
 
-### Raspberry Pi
+#### Production
+
+```
+source config.sh
+npm run build
+npm run prod
+```
+
+Raspberry Pi
+--------------------------------------------------
 
 See `notes/PI_SETUP.txt` for the setup instructions. If it's already
 setup, then you can SSH into the box with:
@@ -38,12 +56,3 @@ TERM=xterm ssh pi@izac.noise
 ```
 
 password should be `noisebridge`.
-
-
-Production Builds
---------------------------------------------------
-
-```
-npm run build
-npm run prod
-```
