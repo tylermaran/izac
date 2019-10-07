@@ -9,4 +9,5 @@ cd $ROOT
 
 virtualenv env
 ./env/bin/pip3 install -r requirements.txt
-./env/bin/python3 server.py
+
+./env/bin/python3 prod_server.py
