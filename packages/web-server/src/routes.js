@@ -7,6 +7,7 @@ exports.configureRoutes = function configureRoutes(app, clientDir, pinServerPort
   app.get('/bottles', handlers.bottles.getAll(db));
   app.get('/bottles/:id', handlers.bottles.get(db));
   app.post('/bottles/:id/refill', handlers.bottles.refill(db));
+  app.post('/bottles/:id/set-fill', handlers.bottles.setFill(db));
 
   app.get('/drinks', handlers.drinks.getAll(db));
   app.get('/drinks/:id', handlers.drinks.get(db));
