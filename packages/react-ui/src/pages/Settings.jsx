@@ -41,7 +41,7 @@ const Settings = props => {
               name={bottles.name}
               id={bottles.id}
               max_liters={bottles.max_liters}
-              current_liters={bottles.current_liters}
+              current_liters={bottles.max_liters * bottles.fill}
               key={bottles.id}
             />
           ))}
