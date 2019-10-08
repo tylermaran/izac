@@ -33,21 +33,33 @@ const Settings = props => {
     });
   };
 
+  const setFill = (bottleID, currentFill) => {
+    const newFill = parseFloat(prompt("new fill level?", currentFill));
+
+    console.log("new fill:", newFill);
+
+    api.bottle.setFill(bottleID, newFill).then(() => {
+      api.bottle.list().then(data => {
+        setBottles(data.bottles);
+      });
+    });
+  };
+
   return (
     <div>
       <Header />
       <div className="setting">
         {/*
-                All drinks
-                All bottles
-                Add/Remove a drink
-                Add/Remove a bottle
-                Refill bottles
-                Lock machine */}
+        All drinks
+        All bottles
+        Add/Remove a drink
+        Add/Remove a bottle
+        Refill bottles
+        Lock machine */}
         <div className="bottle_list">
           {bottles.map(bottles => (
             <div
-              style={{ border: "2px solid pink", margin: "5px" }}
+              style={{ border: "2px solid pink", marginBottom: "15px" }}
               key={bottles.id}
             >
               <Bottle
@@ -57,12 +69,22 @@ const Settings = props => {
                 current_liters={bottles.max_liters * bottles.fill}
                 key={bottles.id}
               />
-              <div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span
                   style={{ cursor: "pointer", color: "yellow" }}
                   onClick={() => refill(bottles.id)}
                 >
                   Refill
+                </span>
+                <span
+                  style={{
+                    cursor: "pointer",
+                    color: "yellow",
+                    marginLeft: "10px"
+                  }}
+                  onClick={() => setFill(bottles.id, bottles.fill)}
+                >
+                  Set Fill
                 </span>
               </div>
             </div>

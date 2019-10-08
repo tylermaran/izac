@@ -25,3 +25,13 @@ exports.refill = async function(baseURL, id) {
 
   return response.json();
 };
+
+exports.setFill = async function(baseURL, id, fill) {
+  const response = await fetch(`${baseURL}/bottles/${id}/set-fill`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, fill })
+  });
+
+  return response.json();
+};
