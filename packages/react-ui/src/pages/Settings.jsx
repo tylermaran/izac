@@ -24,11 +24,20 @@ const Settings = props => {
     });
   }, []);
 
+  const refill = bottleID => {
+    api.bottle.refill(bottleID).then(() => {
+      api.bottle.list().then(data => {
+        console.log(data);
+        setBottles(data.bottles);
+      });
+    });
+  };
+
   return (
     <div>
       <Header />
       <div className="setting">
-        {/*                 
+        {/*
                 All drinks
                 All bottles
                 Add/Remove a drink
@@ -37,13 +46,26 @@ const Settings = props => {
                 Lock machine */}
         <div className="bottle_list">
           {bottles.map(bottles => (
-            <Bottle
-              name={bottles.name}
-              id={bottles.id}
-              max_liters={bottles.max_liters}
-              current_liters={bottles.max_liters * bottles.fill}
+            <div
+              style={{ border: "2px solid pink", margin: "5px" }}
               key={bottles.id}
-            />
+            >
+              <Bottle
+                name={bottles.name}
+                id={bottles.id}
+                max_liters={bottles.max_liters}
+                current_liters={bottles.max_liters * bottles.fill}
+                key={bottles.id}
+              />
+              <div>
+                <span
+                  style={{ cursor: "pointer", color: "yellow" }}
+                  onClick={() => refill(bottles.id)}
+                >
+                  Refill
+                </span>
+              </div>
+            </div>
           ))}
         </div>
 
