@@ -16,7 +16,9 @@ import "./Order.css";
 
 // Initialize our API to point to our backend's "base url"
 // This "API" class can be looked at in the `barbot-api` package
-const api = new API("http://localhost:5000");
+const api = new API(
+  `http://localhost:${process.env.REACT_APP_WEB_SERVER_PORT}`
+);
 
 const Order = props => {
   // React Hooks Reference:

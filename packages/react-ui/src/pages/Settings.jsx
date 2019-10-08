@@ -10,7 +10,9 @@ import "./Settings.css";
 import Header from "../components/Header";
 import Bottle from "../components/Bottle";
 
-const api = new API("http://localhost:5000");
+const api = new API(
+  `http://localhost:${process.env.REACT_APP_WEB_SERVER_PORT}`
+);
 
 const Settings = props => {
   const [bottles, setBottles] = useState([]);
