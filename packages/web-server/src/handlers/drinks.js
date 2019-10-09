@@ -172,7 +172,7 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
       const newFill = (currentLiters - pour.liters) / bottle.max_liters;
 
       // set the new bottle level accordingly
-      pendingActions.push(db.bottle.setBottleFill(bottle.id, newFill));
+      pendingActions.push(db.bottle.setFill(bottle.id, newFill));
 
       switch (device_type.name) {
         case DEVICE_TYPES.AIR_PUMP: {
