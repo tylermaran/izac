@@ -39,12 +39,11 @@ const Order = props => {
     });
   }, []);
 
-  const promptComfirm = drink => {
+  const promptConfirm = drink => {
     console.log("2. opening the prompt", drink);
 
     // show confirm
     setConfirm(true);
-    setBlockUI(true);
     setDrinkComplete(false);
     setCurrentDrink(drink);
   };
@@ -57,6 +56,9 @@ const Order = props => {
   let handleOrder = async () => {
     // Print out what we are ordering
     console.log("Ordering a " + currentDrink.name);
+
+    // Block the UI after the user hits "pour"
+    setBlockUI(true);
 
     // Calls 'Pour' from the Barbot API
     const data = await api.drink.pour(currentDrink.id);
@@ -95,14 +97,14 @@ const Order = props => {
         {drinkList.map(drink => (
           <Drink
             name={drink.name}
-            function={() => promptComfirm(drink)}
+            onClick={() => promptConfirm(drink)}
             key={Math.random()}
           />
         ))}
 
         <Drink
           name="Custom"
-          function={() => promptComfirm("Custom")}
+          function={() => promptConfirm("Custom")}
           key={Math.random()}
         />
       </div>

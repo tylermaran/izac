@@ -29,7 +29,7 @@ const Confirm = props => {
     pour = "Enjoy!";
     setTimeout(() => {
       props.closeModal();
-    }, 2000);
+    }, 1200);
   }
 
   return (
