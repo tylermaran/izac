@@ -44,7 +44,6 @@ const Order = props => {
 
     // show confirm
     setConfirm(true);
-    setBlockUI(true);
     setDrinkComplete(false);
     setCurrentDrink(drink);
   };
@@ -57,6 +56,9 @@ const Order = props => {
   let handleOrder = async () => {
     // Print out what we are ordering
     console.log("Ordering a " + currentDrink.name);
+
+    // Block the UI after the user hits "pour"
+    setBlockUI(true);
 
     // Calls 'Pour' from the Barbot API
     const data = await api.drink.pour(currentDrink.id);
