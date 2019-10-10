@@ -39,7 +39,7 @@ const Order = props => {
     });
   }, []);
 
-  const promptComfirm = drink => {
+  const promptConfirm = drink => {
     console.log("2. opening the prompt", drink);
 
     // show confirm
@@ -95,14 +95,14 @@ const Order = props => {
         {drinkList.map(drink => (
           <Drink
             name={drink.name}
-            onClick={() => promptComfirm(drink)}
+            onClick={() => promptConfirm(drink)}
             key={Math.random()}
           />
         ))}
 
         <Drink
           name="Custom"
-          function={() => promptComfirm("Custom")}
+          function={() => promptConfirm("Custom")}
           key={Math.random()}
         />
       </div>
