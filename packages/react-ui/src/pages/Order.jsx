@@ -95,7 +95,7 @@ const Order = props => {
         {drinkList.map(drink => (
           <Drink
             name={drink.name}
-            function={() => promptComfirm(drink)}
+            onClick={() => promptComfirm(drink)}
             key={Math.random()}
           />
         ))}
