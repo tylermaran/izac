@@ -10,7 +10,12 @@ import Testing from "./pages/Testing";
 
 function App() {
   return (
-    <div className="App">
+    <div
+      className="App"
+      style={{
+        cursor: process.env.NODE_ENV === "production" ? "none" : "auto"
+      }}
+    >
       <Router>
         <Switch>
           <Route exact path="/" component={Landing} />
