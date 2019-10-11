@@ -71,12 +71,12 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
   // this ratio to calculate the time it takes other volumes to pour
   // out adjusted for bottle air pressure.
 
-  // how long does it take to pour a shot with a FULL bottle of liquor with
-  // our air pumps?
   const measurement = {
     liters: 0.044,
-    full_bottle_pour_duration: 2000,
-    near_empty_bottle_pour_duration: 5000
+    // how long does it take to pour (in milliseconds) a shot with a
+    // FULL bottle of liquor with our air pumps?
+    full_bottle_pour_duration: 1500,
+    near_empty_bottle_pour_duration: 3000
   };
 
   // adjust the duration from of measurement to the passed in liters we're pouring
@@ -177,6 +177,7 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
       switch (device_type.name) {
         case DEVICE_TYPES.AIR_PUMP: {
           const pin = pins[0]; // air pumps only have one pin
+
           const durMs = get_air_bottle_pour_duration(
             pour.liters, currentLiters, bottle.max_liters);
 
