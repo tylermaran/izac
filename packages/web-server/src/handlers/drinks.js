@@ -84,15 +84,7 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
   const full_bottle_duration =
     (measurement.full_bottle_pour_duration * liter_pour) / measurement.liters;
 
-  console.log('>>> full bottle pour duration:', full_bottle_duration);
-
   const fill_ratio = current_bottle_fill / full_bottle_fill;
-
-  console.log('>>> fill_ratio', fill_ratio)
-
-  // A ratio that we can adjust. The larger the number, the higher the
-  // pour duration will be when we get down to the bottom of the bottle.
-  const skew = 30;
 
   // adjust the pour time based on how empty the bottle is.
   //
@@ -117,7 +109,7 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
     )
   );
 
-  console.log(`${full_bottle_duration} + (1 / ${fill_ratio}) * ${skew} - ${skew} = ${actual_duration}`)
+  console.log(`actual pour puration: ${actual_duration}`);
 
   return Math.round(actual_duration);
 }
