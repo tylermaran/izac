@@ -73,7 +73,7 @@ function get_peristaltic_bottle_pour_duration(liter_pour) {
   // long it takes to pour a shot with the peristaltic pumps.
   const measurement = {
     liters: 0.044,
-    full_bottle_pour_duration: 2000
+    full_bottle_pour_duration: 6000
   };
 
   // adjust the duration from of measurement to the passed in liters we're pouring
