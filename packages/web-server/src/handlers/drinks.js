@@ -100,8 +100,8 @@ function get_air_bottle_pour_duration(
     liters: 0.044,
     // how long does it take to pour (in milliseconds) a shot with a
     // FULL bottle of liquor with our air pumps?
-    full_bottle_pour_duration: 1600,
-    near_empty_bottle_pour_duration: 2000
+    full_bottle_pour_duration: 1400,
+    near_empty_bottle_pour_duration: 1800
   };
 
   const fill_ratio = currentLiters / maxLiters;
