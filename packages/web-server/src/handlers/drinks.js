@@ -84,7 +84,13 @@ function get_peristaltic_bottle_pour_duration(liter_pour) {
   return Math.round(pour_duration);
 }
 
-function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bottle_fill) {
+
+function get_air_bottle_pour_duration(
+  liter_pour,
+  currentLiters,
+  maxLiters,
+  msSinceLastPour
+) {
   // with a full bottle (1.75L) of liquor, it takes ~2 seconds to pour
   // a shot (0.044L) out of the machine with our air pumps. We use
   // this ratio to calculate the time it takes other volumes to pour
@@ -94,25 +100,27 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
     liters: 0.044,
     // how long does it take to pour (in milliseconds) a shot with a
     // FULL bottle of liquor with our air pumps?
-    full_bottle_pour_duration: 1500,
-    near_empty_bottle_pour_duration: 3000
+    full_bottle_pour_duration: 2000,
+    near_empty_bottle_pour_duration: 2500
   };
 
-  // adjust the duration from of measurement to the passed in liters we're pouring
-  // this time is ONLY valid for full bottles
-  const full_bottle_duration =
-    (measurement.full_bottle_pour_duration * liter_pour) / measurement.liters;
-
-  const fill_ratio = current_bottle_fill / full_bottle_fill;
+  const fill_ratio = currentLiters / maxLiters;
 
   // adjust the pour time based on how empty the bottle is.
   //
-  // e.g. (2000 + (5000 * ((100-50) / 100))) - 2000
+  // e.g. assuming our values are:
+  //
+  //    full_bottle_pour_duration = 2000
+  //    near_empty_bottle_pour_duration = 5000
+  //
+  // we have the following result:
+  //
+  //  (2000 + (5000 * ((100-50) / 100))) - 2000
   //
   //     2000 = full bottle shot pour (ms)
   //     5000 = empty-ish (near empty) bottle shot (ms)
-  //     100 = full_bottle_fill (parameter)
-  //     50 = current_bottle_fill (parameter)
+  //     100 = maxLiters (parameter)
+  //     50 = currentLiters (parameter)
   //
   const actual_duration = (
     measurement.full_bottle_pour_duration +
@@ -123,14 +131,27 @@ function get_air_bottle_pour_duration(liter_pour, current_bottle_fill, full_bott
       )
       *
       (
-        (full_bottle_fill - current_bottle_fill) / full_bottle_fill
+        (maxLiters - currentLiters) / maxLiters
       )
     )
   );
 
-  console.log(`actual pour puration: ${actual_duration}`);
+  // "stale pours" are those that, uh. well. the air pumps don't keep
+  // pressure in the bottles. if we haven't poured a bottle for certain
+  // thresholds add more time lol.
+  const minutesSinceLastPour = msSinceLastPour / 1000 / 60;
 
-  return Math.round(actual_duration);
+  const pressurize_time_ms = normalize(0, 3000, (
+    (minutesSinceLastPour >= 20) ? 1 : minutesSinceLastPour / 25));
+
+  const totalPourDuration = Math.round(pressurize_time_ms + actual_duration)
+
+  console.log(`ms since last pour: ${msSinceLastPour}ms`);
+  console.log(`pressurize time ms: ${pressurize_time_ms}`);
+  console.log(`actual pour puration: ${actual_duration}`);
+  console.log(`total pour duration: ${totalPourDuration}`);
+
+  return totalPourDuration;
 }
 
 exports.pour = (db, pinServerPort) => async (req, res) => {
@@ -150,6 +171,8 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
   try {
     const drink = await db.drink.getByIdWithEverything(id);
 
+    console.log(JSON.stringify(drink, null, 4));
+
     if (!drink) {
       res.status(404).json({ error: 'drink not found' });
       return;
@@ -168,6 +191,12 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
       }
     }
 
+    // current time in ms.
+    // (in number of milliseconds elapsed from January 1, 1970)
+    const nowUnixMs = Date.now();
+
+    console.log(`now unix ms lol: ${nowUnixMs}`);
+
     // map over each bottle pour, and return a promise that represents
     // a single bottle pour for the overall drink.
     const bottlePours = drink.pours.map((pour) => {
@@ -176,6 +205,13 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
 
       const bottle = pour.bottle;
       const { device_type, pins } = bottle.device;
+
+      // get last time the bottle was poured in ms (in number from Jan 1, 1970)
+      const lastPouredUnixMs = new Date(bottle.updated_at).getTime();
+
+      console.log(`last poured unix ms: ${lastPouredUnixMs}`);
+
+      const msSinceLastPour = nowUnixMs - lastPouredUnixMs;
 
       // the current bottle level in liters.
       const currentLiters = bottle.max_liters * bottle.fill;
@@ -190,7 +226,7 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
           const pin = pins[0]; // air pumps only have one pin
 
           const durMs = get_air_bottle_pour_duration(
-            pour.liters, currentLiters, bottle.max_liters);
+            pour.liters, currentLiters, bottle.max_liters, msSinceLastPour);
 
           console.log(`air, pin=${pin}, dur=${durMs}, bottle=${bottle.name}`);
           pendingActions.push(robots.low_then_high(pinServerPort,
