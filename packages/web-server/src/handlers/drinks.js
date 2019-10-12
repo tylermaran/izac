@@ -49,6 +49,25 @@ exports.getAll = (db) => async (req, res) => {
   }
 };
 
+/**
+   https://en.wikipedia.org/wiki/Normalization_(statistics)
+
+   @param min - minimum value
+   @param max - maximum value
+   @param scale - a float value (0-1)
+
+
+   e.g.
+
+   normalize(50, 200, 0) // 50
+   normalize(50, 200, 1) // 200
+   normalize(50, 200, 0.5) // 125
+
+ */
+function normalize(min, max, scale) {
+  return ((max - min) * scale) + min;
+}
+
 function get_peristaltic_bottle_pour_duration(liter_pour) {
   // our mesurement of what a shot is. This is a ratio that represents how
   // long it takes to pour a shot with the peristaltic pumps.
