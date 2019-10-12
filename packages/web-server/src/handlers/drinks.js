@@ -141,8 +141,8 @@ function get_air_bottle_pour_duration(
   // thresholds add more time lol.
   const minutesSinceLastPour = msSinceLastPour / 1000 / 60;
 
-  const pressurize_time_ms = normalize(0, 3000, (
-    (minutesSinceLastPour >= 20) ? 1 : minutesSinceLastPour / 25));
+  const pressurize_time_ms = normalize(0, 2000, (
+    (minutesSinceLastPour >= 25) ? 1 : minutesSinceLastPour / 25));
 
   const totalPourDuration = Math.round(pressurize_time_ms + actual_duration)
 
