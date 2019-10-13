@@ -599,4 +599,7 @@ module.exports = async function seed(db) {
 
   const drink_gin_tonic = await Drink.create({ name: "Gin & Tonic" });
   await drink_gin_tonic.setPours([ pour_shot_gin, pour_shot_chaser_tonic ]);
+
+  const drink_coke = await Drink.create({ name: "Coke" });
+  await drink_coke.setPours([ pour_shot_chaser_coke ]);
 }
