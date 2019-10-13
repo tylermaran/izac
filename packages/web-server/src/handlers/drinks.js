@@ -124,16 +124,16 @@ function get_air_bottle_pour_duration(
   //
   const actual_duration = (
     measurement.full_bottle_pour_duration +
-    (
       (
-        measurement.near_empty_bottle_pour_duration -
-        measurement.full_bottle_pour_duration
+        (
+          measurement.near_empty_bottle_pour_duration -
+          measurement.full_bottle_pour_duration
+        )
+        *
+        (
+          (maxLiters - currentLiters) / maxLiters
+        )
       )
-      *
-      (
-        (maxLiters - currentLiters) / maxLiters
-      )
-    )
   );
 
   // "stale pours" are those that, uh. well. the air pumps don't keep
@@ -244,13 +244,13 @@ exports.pour = (db, pinServerPort) => async (req, res) => {
 
           pendingActions.push(robots.low_then_high(
             pinServerPort,
-            forwardPin.physical_pin_number,
+            reversePin.physical_pin_number, // todo these are reversed lol
             durMs
           ).then(() => {
             return new Promise((resolve) => setTimeout(resolve, 500));
           }).then(() => {
             return robots.low_then_high(pinServerPort,
-                                        reversePin.physical_pin_number,
+                                        forwardPin.physical_pin_number, // todo these are reversed lol
                                         durMs);
           }));
 
