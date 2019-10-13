@@ -94,13 +94,21 @@ const Order = props => {
       <div className="menu">
         {blockUI ? <div className="block"></div> : <></>}
 
-        {drinkList.map(drink => (
-          <Drink
-            name={drink.name}
-            onClick={() => promptConfirm(drink)}
-            key={Math.random()}
-          />
-        ))}
+        {drinkList.map(drink => {
+          for (let pour of drink.pours) {
+            if (pour.bottle.fill <= 0.05) {
+              return null;
+            }
+          }
+
+          return (
+            <Drink
+              name={drink.name}
+              onClick={() => promptConfirm(drink)}
+              key={Math.random()}
+            />
+          );
+        })}
 
         <Drink
           name="Custom"

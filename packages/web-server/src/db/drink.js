@@ -5,9 +5,16 @@ exports.getAll = (models) =>
 
 exports.getAllWithPours = (models) =>
   models.Drink.findAll({
-    include: {
-      model: models.Pour
-    }
+    include: [
+      {
+        model: models.Pour,
+        include: [
+          {
+            model: models.Bottle
+          }
+        ]
+      }
+    ]
   }).then(xs => xs.map(x => x.toJSON()));
 
 exports.getById = (models, id) =>
@@ -16,9 +23,16 @@ exports.getById = (models, id) =>
 exports.getByIdWithPours = (models, id) =>
   models.Drink.findOne({
     where: { id },
-    include: {
-      model: models.Pour
-    }
+    include: [
+      {
+        model: models.Pour,
+        include: [
+          {
+            model: models.Bottle
+          }
+        ]
+      }
+    ]
   }).then(m => m.toJSON());
 
 exports.getByIdWithEverything = (models, id) =>
