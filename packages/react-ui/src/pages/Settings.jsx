@@ -33,8 +33,42 @@ const Settings = props => {
     });
   };
 
+  const empty = (bottleID, currentFill) => {
+    api.bottle.setFill(bottleID, 0).then(() => {
+      api.bottle.list().then(data => {
+        setBottles(data.bottles);
+      });
+    });
+  };
+
+  const twentyFive = (bottleID, currentFill) => {
+    api.bottle.setFill(bottleID, 0.25).then(() => {
+      api.bottle.list().then(data => {
+        setBottles(data.bottles);
+      });
+    });
+  };
+
+  const fifty = (bottleID, currentFill) => {
+    api.bottle.setFill(bottleID, 0.5).then(() => {
+      api.bottle.list().then(data => {
+        setBottles(data.bottles);
+      });
+    });
+  };
+
+  const seventyFive = (bottleID, currentFill) => {
+    api.bottle.setFill(bottleID, 0.75).then(() => {
+      api.bottle.list().then(data => {
+        setBottles(data.bottles);
+      });
+    });
+  };
+
   const setFill = (bottleID, currentFill) => {
-    const newFill = parseFloat(prompt("new fill level?", currentFill));
+    const newFill = parseFloat(
+      prompt("new fill level (value 0 - 1)?", currentFill)
+    );
 
     console.log("new fill:", newFill);
 
@@ -50,12 +84,12 @@ const Settings = props => {
       <Header />
       <div className="setting">
         {/*
-        All drinks
-        All bottles
-        Add/Remove a drink
-        Add/Remove a bottle
-        Refill bottles
-        Lock machine */}
+            All drinks
+            All bottles
+            Add/Remove a drink
+            Add/Remove a bottle
+            Refill bottles
+            Lock machine */}
         <div className="bottle_list">
           {bottles.map(bottles => (
             <div
@@ -72,10 +106,39 @@ const Settings = props => {
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span
                   style={{ cursor: "pointer", color: "yellow" }}
+                  onClick={() => empty(bottles.id)}
+                >
+                  Empty
+                </span>
+
+                <span
+                  style={{ cursor: "pointer", color: "yellow" }}
+                  onClick={() => twentyFive(bottles.id)}
+                >
+                  25%
+                </span>
+
+                <span
+                  style={{ cursor: "pointer", color: "yellow" }}
+                  onClick={() => fifty(bottles.id)}
+                >
+                  50%
+                </span>
+
+                <span
+                  style={{ cursor: "pointer", color: "yellow" }}
+                  onClick={() => seventyFive(bottles.id)}
+                >
+                  75%
+                </span>
+
+                <span
+                  style={{ cursor: "pointer", color: "yellow" }}
                   onClick={() => refill(bottles.id)}
                 >
                   Refill
                 </span>
+
                 <span
                   style={{
                     cursor: "pointer",
