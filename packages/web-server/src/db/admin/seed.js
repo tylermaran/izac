@@ -539,9 +539,10 @@ module.exports = async function seed(db) {
   // >>>> drinks
   //
   const drink_neat_rum = await Drink.create({ name: 'Rum (neat)' });
-
   await drink_neat_rum.setPours([ pour_shot_spicedRum ]);
 
+  const drink_neat_bourbon = await Drink.create({ name: 'Bourbon (neat)' });
+  await drink_neat_bourbon.setPours([ pour_shot_bourbon ]);
 
   const drink_neat_gin = await Drink.create({name: "Gin (neat)"});
   await drink_neat_gin.setPours([ pour_shot_gin ]);
