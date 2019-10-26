@@ -1,12 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>iZac Docs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="./style.css" />
+  <title>iZac Docs</title>
 </head>
+
 <body>
-    Welcome to iZac
+  <div class="landing">
+    <div class="inner_tan_landing">
+      <div class="inner_red_landing">
+        <span class="rotate char1">i</span>
+        <span class="rotate char2">Z</span>
+        <span class="rotate char3">a</span>
+        <span class="rotate char4">c</span>
+        <span class="rotate char5">'</span>
+        <span class="rotate char6">s</span>
+        <span class="rotate char7">B</span>
+        <span class="rotate char8">a</span>
+        <span class="rotate char9">r</span>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="header">
+          <h1 class="title">
+            iZac's Bar: Documentation
+          </h1>
+          <div class="git_link">
+            <a href="https://github.com/tylermaran/izac" target="new">[github]</a>
+          </div>
+        </div>
+        <div class="about">
+          <h2>About:</h2>
+          <div class="about_content">
+            <p>
+              A joint project for the annual SF Robitic bartender competition,
+              iZac is a fully functional bar with 190 drink options (although
+              some of those would be terrible)
+            </p>
+            <p>
+              React / Node / Python running on a Rasberry Pi 4. The react UI
+              calls a Node API which handles bottle stats, and calls a Python
+              microservice to control pins.
+            </p>
+            <p>
+              Using combination of Air Pressure (liquor) and peristaltic pumps
+              (soda) to control drink level. Node API tracks bottle fill level
+              and adjusts pressure to equalize pour volumes
+            </p>
+          </div>
+          <div class="izac">
+            <img class="izac_image" src="../packages/react-ui/src/images/izac.png" alt="" srcset="" />
+          </div>
+        </div>
+        <div class="construction">
+          <h2>Construction:</h2>
+
+          <img class="construction_image" src="../packages/react-ui/src/images/pumps.JPG" alt="" srcset="">
+          <img class="construction_image" src="../packages/react-ui/src/images/stoppers.JPG" alt="" srcset="">
+          <img class="construction_image" src="../packages/react-ui/src/images/screen.JPG" alt="" srcset="">
+          <img class="construction_image" src="../packages/react-ui/src/images/case.PNG" alt="" srcset="">
+          <p>Pictured left -> right:</p>
+          <ol>
+            <li>14 Air Pumps and 4 Peristaltic Pumps</li>
+            <li>Custom Silicon bottle stoppers to maintain pressure in bottles</li>
+            <li>Raspberry Pi with 7 inch touch display</li>
+            <li>Laser Cut casing for Pi & Display</li>
+          </ol>
+        </div>
+
+        <div class="maintenance">
+          <h2>Maintenance:</h2>
+          <p>Refilling Bottles:</p>
+          <ol>
+            <li>Remove Stoppers from bottles</li>
+            <li>Pour appropriate alcohol into the new bottle using a funnel</li>
+            <li>In iZac settings, select the refilled bottle and hit the 'Refill' option. If the bottle is not completely full, enter an estimated %</li>
+            <li>Note: there is no fill indicator for bottles on peristaltic pumps. Here fluid pressure is not a concern.</li>
+          </ol>
+          <p>Cleaning:</p>
+          <ul>
+            <li>Removing Hoses from pumps</li>
+            <li>Cleaning Silicon stoppers</li>
+            <li>Cleaning Drip Tray</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>
