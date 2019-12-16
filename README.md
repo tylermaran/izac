@@ -2,6 +2,7 @@ izac
 ================================================================================
 
 > Open source repository for iZac, the NoiseBridge Barbot.
+
 > Additional info at: https://tylermaran.github.io/izac/
 
 Dependencies
