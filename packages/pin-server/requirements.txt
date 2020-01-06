@@ -4,5 +4,5 @@ itsdangerous==1.1.0
 Jinja2==2.10.1
 MarkupSafe==1.1.1
 RPi.GPIO==0.7.0
-waitress==1.4.0
+waitress==1.4.2
 Werkzeug==0.15.5
