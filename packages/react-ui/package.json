@@ -10,8 +10,8 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "BROWSER=none REACT_APP_WEB_SERVER_PORT=$WEB_SERVER_PORT react-scripts start",
+    "build": "REACT_APP_WEB_SERVER_PORT=$WEB_SERVER_PORT ./bin/build.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -29,5 +29,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
   }
 }

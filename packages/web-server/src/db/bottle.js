@@ -4,7 +4,7 @@ exports.getAll = (models) =>
 exports.getById = (models, id) =>
   models.Bottle.findOne({ where: { id } }).then(m => m.toJSON());
 
-exports.setBottleFill = (models, id, fill) =>
+exports.setFill = (models, id, fill) =>
   models.Bottle.update({ fill }, { where: { id } })
 
 exports.refill = (models, id) =>
