@@ -1,16 +1,16 @@
 .bottle {
-    width: 100%;
-    padding: 0 0 0 10px;
-    height: auto;
-    border-bottom: 2px solid green;
-    margin: 5px;
-    font-size: 15px;
-    color: white;
+	border-bottom: 2px solid green;
+	color: white;
+	font-size: 15px;
+	height: auto;
+	padding: 0 0 0 10px;
+	padding: 1rem;
 }
 
-.bottle_name, .bottle_id {
-    display: inline;
+.bottle_name,
+.bottle_id {
+	display: inline;
 }
 .bottle_id {
-    float: right;
+	float: right;
 }
