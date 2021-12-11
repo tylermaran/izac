@@ -3,12 +3,12 @@
 # new as of 12/11/2021
 
 Can't figure out what we were doing here. Some Lerna packing stuff.
-The webserver was packaged, and imported into the react frontend (see [izac\packages\react-ui\src\pages\Order.jsx](https://github.com/tylermaran/izac/tree/master/izac/packages/react-ui/src/pages/Order.jsx)) for example.
+The webserver was packaged, and imported into the react frontend (see [izac\packages\react-ui\src\pages\Order.jsx](https://github.com/tylermaran/izac/blob/master/packages/react-ui/src/pages/Order.jsx)) for example.
 Didn't feel like fixing it, so I made some mock functions so you can get the webserver running.
 
 Honestly, it's probably best to build it all from scratch.
 We built this in a hurry. And there was some heavy drinking involved.
-But please keep the drink css animation [izac\packages\react-ui\src\components\Animation.jsx](https://github.com/tylermaran/izac/tree/master/packages/react-ui/src/components/Animation.jsx)
+But please keep the drink css animation [izac\packages\react-ui\src\components\Animation.jsx](https://github.com/tylermaran/izac/blob/master/packages/react-ui/src/components/Animation.jsx)
 It was a thing of beauty.
 
 Running the webserver
