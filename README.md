@@ -20,7 +20,7 @@ npm i
 npm start
 ```
 
-All of the front-end functions are mocked in [packages\react-ui\src\pages\FAKE_API.js](packages\react-ui\src\pages\FAKE_API.js)
+All of the front-end functions are mocked in [packages\react-ui\src\pages\FAKE_API.js](https://github.com/tylermaran/izac/blob/master/packages/react-ui/src/pages/FAKE_API.js)
 
 Just take these functions and add them to a new api if you want.
 
